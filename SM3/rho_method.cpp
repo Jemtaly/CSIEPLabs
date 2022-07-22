@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "sm3.hpp"
-typedef uint32_t RT;
+typedef uint64_t RT;
 auto rho_method(RT start) {
 	RT x, y;
 	x = y = start;
@@ -33,7 +33,7 @@ auto rho_method(RT start) {
 		SM3().join_last((uint8_t *)&x, sizeof(RT), (uint8_t *)buf_x);
 		SM3().join_last((uint8_t *)&y, sizeof(RT), (uint8_t *)buf_y);
 		if (buf_x[0] == buf_y[0]) {
-			return std::pair<uint32_t, uint32_t>(x, y);
+			return std::pair<RT, RT>(x, y);
 		}
 		x = buf_x[0];
 		y = buf_y[0];
@@ -41,7 +41,7 @@ auto rho_method(RT start) {
 }
 int main() {
 	RT buf[32 / sizeof(RT)];
-	std::pair<uint32_t, uint32_t> res;
+	std::pair<RT, RT> res;
 	do {
 		res = rho_method(rand());
 	} while (res.first == res.second);

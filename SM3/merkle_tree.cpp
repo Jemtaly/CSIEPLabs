@@ -7,7 +7,8 @@ struct data_t {
 };
 void merkle_tree(data_t const *datalist, int start, int end, uint8_t *buf) {
 	if (start == end) {
-		uint8_t m[1025] = {0x00};
+		uint8_t m[datalist[start].len + 1];
+		m[0] = 0x00;
 		memcpy((uint8_t *)m + 1, datalist[start].str, datalist[start].len);
 		SM3_calc(m, datalist[start].len + 1, buf);
 		printf("H%d   = ", start);
@@ -17,7 +18,8 @@ void merkle_tree(data_t const *datalist, int start, int end, uint8_t *buf) {
 		while (start + l * 2 <= end) {
 			l *= 2;
 		}
-		uint8_t m[65] = {0x01};
+		uint8_t m[65];
+		m[0] = 0x01;
 		merkle_tree(datalist, start, start + l - 1, (uint8_t *)m + 1);
 		merkle_tree(datalist, start + l, end, (uint8_t *)m + 33);
 		SM3_calc(m, 65, buf);
