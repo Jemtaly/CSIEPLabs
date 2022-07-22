@@ -115,3 +115,16 @@ public:
 		}
 	}
 };
+void SM3_calc(uint8_t const *data, size_t len, uint8_t *buf, SM3 sm3 = SM3()) {
+	size_t n = len - len % 64, i = 0;
+	for (i = 0; i < n; i += 64) {
+		sm3.join(data + i);
+	}
+	sm3.join_last(data + i, len % 64, buf);
+}
+void print_digest(uint8_t const *data, size_t len) {
+	for (int i = 0; i < len; i++) {
+		printf(" %02X", data[i]);
+	}
+	printf("\n");
+}
