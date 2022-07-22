@@ -18,13 +18,13 @@ int main() {
 	RT buf[32 / sizeof(RT)];
 	auto res = birthday_attack();
 	SM3().join_last((uint8_t *)&res.first, sizeof(RT), (uint8_t *)buf);
-	printf("Ma =");
+	printf("Ma = ");
 	print_digest((uint8_t *)&res.first, sizeof(RT));
-	printf("Ha =");
+	printf("Ha = ");
 	print_digest((uint8_t *)buf, sizeof(RT));
 	SM3().join_last((uint8_t *)&res.second, sizeof(RT), (uint8_t *)buf);
-	printf("Ma =");
+	printf("Ma = ");
 	print_digest((uint8_t *)&res.second, sizeof(RT));
-	printf("Ha =");
+	printf("Ha = ");
 	print_digest((uint8_t *)buf, sizeof(RT));
 }

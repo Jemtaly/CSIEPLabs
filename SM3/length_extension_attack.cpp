@@ -25,10 +25,10 @@ int main() {
 			"\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x40"
 			"0123456789",
 		138, buf_c);
-	printf("Ha =");
+	printf("Ha = ");
 	print_digest(buf_a, 32);
-	printf("Hb =");
+	printf("Hb = ");
 	print_digest(buf_b, 32);
-	printf("Hc =");
+	printf("Hc = ");
 	print_digest(buf_c, 32);
 }
