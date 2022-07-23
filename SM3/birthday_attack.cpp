@@ -23,8 +23,8 @@ int main() {
 	printf("Ha = ");
 	print_digest((uint8_t *)buf, sizeof(RT));
 	SM3().join_last((uint8_t *)&res.second, sizeof(RT), (uint8_t *)buf);
-	printf("Ma = ");
+	printf("Mb = ");
 	print_digest((uint8_t *)&res.second, sizeof(RT));
-	printf("Ha = ");
+	printf("Hb = ");
 	print_digest((uint8_t *)buf, sizeof(RT));
 }
