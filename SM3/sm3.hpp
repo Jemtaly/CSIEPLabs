@@ -5,8 +5,8 @@
 #define P0(x) ((x) ^ ROL32(x, 9) ^ ROL32(x, 17))
 #define P1(x) ((x) ^ ROL32(x, 15) ^ ROL32(x, 23))
 #define FF00(x, y, z) ((x) ^ (y) ^ (z))
-#define FF10(x, y, z) ((x) & (y) | (x) & (z) | (y) & (z))
 #define GG00(x, y, z) ((x) ^ (y) ^ (z))
+#define FF10(x, y, z) ((x) & (y) | (x) & (z) | (y) & (z))
 #define GG10(x, y, z) ((z) ^ ((x) & ((y) ^ (z))))
 class SM3 {
 	static constexpr auto K = [](uint32_t TT00, uint32_t TT10) {
@@ -115,14 +115,14 @@ public:
 		}
 	}
 };
-void SM3_calc(uint8_t const *data, size_t len, uint8_t *buf, SM3 sm3 = SM3()) {
-	size_t n = len - len % 64, i = 0;
-	for (i = 0; i < n; i += 64) {
+inline void SM3_calc(uint8_t const *data, size_t len, uint8_t *buf, SM3 sm3 = SM3()) {
+	size_t n = len - len % 64;
+	for (size_t i = 0; i < n; i += 64) {
 		sm3.join(data + i);
 	}
-	sm3.join_last(data + i, len % 64, buf);
+	sm3.join_last(data + n, len % 64, buf);
 }
-void print_digest(uint8_t const *data, size_t len) {
+inline void print_digest(uint8_t const *data, size_t len) {
 	for (int i = 0;;) {
 		printf("%02X", data[i]);
 		if (++i < len) {
