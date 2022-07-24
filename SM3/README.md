@@ -20,6 +20,14 @@
 
 ## SM3 Optimization
 
-经测试，加密 1 GB 文件耗时约 3.8 s.
+经测试，优化后的算法加密 1 GB 文件耗时约 3.8 s.
 
 ![screenshot](/SM3/screenshots/sm3_test.png)
+
+## Merkle Tree
+
+依据协议 RFC6962 实现 Merkel 树，构造具有 10w 叶节点的 Merkle 树，可以对指定元素构建包含关系的证明，可以对指定元素构建不包含关系的证明。
+
+思路：通过递归实现创建和遍历 Merkle 树，验证时先通过遍历查找元素对应的叶子节点，若未找到则证明不存在，否则一次验证其每个父节点是否正确，如果全部正确则证明存在，否则返回异常。
+
+![screenshot](/SM3/screenshots/merkle_tree.png)
