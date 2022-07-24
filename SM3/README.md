@@ -8,7 +8,7 @@
 
 ## Rho Method
 
-针对 *64* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下耗时约 3 h, 另外针对 *32* 位简化 SM3 算法耗时与生日攻击相近。
+针对 *64* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下耗时约 3 h, 另外针对 *32* 位简化 SM3 算法耗时约为 0.04 s.
 
 ![screenshot](/SM3/screenshots/rho_method.png)
 
