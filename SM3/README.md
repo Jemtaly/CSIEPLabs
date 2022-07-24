@@ -20,6 +20,6 @@
 
 ## SM3 Optimization
 
-经测试，加密 1 GB 文件耗时约 3s.
+经测试，加密 1 GB 文件耗时约 3.8 s.
 
 ![screenshot](/SM3/screenshots/sm3_test.png)
