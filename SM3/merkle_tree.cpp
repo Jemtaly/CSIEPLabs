@@ -15,8 +15,6 @@ class MerkleTree {
 			if (memcmp(hash, h, 32)) {
 				return false;
 			}
-			printf("H[%5llu, %5llu]\t= ", start, start + count - 1);
-			print_digest(hash, 32);
 		} else {
 			if (left->check_inner(h, start)) {
 				printf("H[%5llu, %5llu] = ", start + left->count, start + count - 1);
@@ -33,11 +31,11 @@ class MerkleTree {
 			memcpy(m + 33, right->hash, 32);
 			SM3_calc(m, 65, buf);
 			if (memcmp(hash, buf, 32)) {
-				throw false;
+				throw std::exception();
 			}
-			printf("H[%5llu, %5llu] = ", start, start + count - 1);
-			print_digest(hash, 32);
 		}
+		printf("H[%5llu, %5llu] = ", start, start + count - 1);
+		print_digest(hash, 32);
 		return true;
 	}
 public:
