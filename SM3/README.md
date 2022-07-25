@@ -1,5 +1,19 @@
 # SM3
 
+贡献者：李岱耕
+
+目录：
+
+- [Birthday Attack](#birthday-attack)
+
+- [Rho Method](#rho-method)
+
+- [Length Extension Attack](#length-extension-attack)
+
+- [SM3 优化](#sm3-optimization)
+
+- [Merkle Tree](#merkle-tree)
+
 ## Birthday Attack
 
 ### 编译和运行
@@ -15,7 +29,7 @@ g++ birthday_attack.cpp -std=c++20 -o birthday_attack.exe -O3
 
 针对 *32* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击平均耗时约 24 ms, 最大内存占用量 4.7 MB.
 
-![screenshot](/SM3/screenshots/birthday_attack.png)
+![screenshot](screenshots/birthday_attack.png)
 
 ## Rho Method
 
@@ -40,11 +54,11 @@ g++ rho_method.cpp -std=c++20 -o rho_method.exe -O3
 
 针对 *32* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下单次攻击平均耗时约 51 ms:
 
-![screenshot](/SM3/screenshots/rho_method.png)
+![screenshot](screenshots/rho_method.png)
 
 另外针对 *64* 位简化 SM3 算法也进行了测试，耗时约为 30 min.
 
-![screenshot](/SM3/screenshots/rho_method_64.png)
+![screenshot](screenshots/rho_method_64.png)
 
 ## Length Extension Attack
 
@@ -61,7 +75,7 @@ g++ length_extension_attack.cpp -std=c++20 -o length_extension_attack.exe -O3
 
 先通过 SM3 算法计算出信息 `a = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"` 对应的哈希值 `Ha`, 对其进行长度扩展攻击，扩充一段信息 `b = "0123456789"` 并计算出新的哈希值 `Hb`, 然后与直接计算 `c = a || padding || b` 得到的哈希值 `Hc` 进行比较验证。
 
-![screenshot](/SM3/screenshots/length_extension_attack.png)
+![screenshot](screenshots/length_extension_attack.png)
 
 ## SM3 Optimization
 
@@ -78,7 +92,7 @@ g++ sm3_test.cpp -std=c++20 -o sm3_test.exe -O3
 
 经测试，优化后的算法加密 1 GB 文件耗时约 3.8 s.
 
-![screenshot](/SM3/screenshots/sm3_test.png)
+![screenshot](screenshots/sm3_test.png)
 
 ## Merkle Tree
 
@@ -102,4 +116,4 @@ g++ merkle_tree.cpp -std=c++20 -o merkle_tree.exe -O3
 
 ### 测试结果
 
-![screenshot](/SM3/screenshots/merkle_tree.png)
+![screenshot](screenshots/merkle_tree.png)
