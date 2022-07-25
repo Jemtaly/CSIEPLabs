@@ -1,58 +1,61 @@
 #include <stdlib.h>
 #include <iostream>
 #include "sm3.hpp"
-typedef uint64_t RT;
-auto rho_method(RT start) {
-	RT x, y;
-	x = y = start;
-	do {
-		RT buf[32 / sizeof(RT)];
-		SM3().join_last((uint8_t *)&x, sizeof(RT), (uint8_t *)buf);
-		x = buf[0];
-		SM3().join_last((uint8_t *)&y, sizeof(RT), (uint8_t *)buf);
-		y = buf[0];
-		SM3().join_last((uint8_t *)&y, sizeof(RT), (uint8_t *)buf);
-		y = buf[0];
-	} while (x != y);
-	RT cycle = 0;
-	do {
-		RT buf[32 / sizeof(RT)];
-		SM3().join_last((uint8_t *)&y, sizeof(RT), (uint8_t *)buf);
-		y = buf[0];
-		cycle++;
-	} while (x != y);
-	x = y = start;
-	for (int i = 0; i < cycle; i++) {
-		RT buf[32 / sizeof(RT)];
-		SM3().join_last((uint8_t *)&x, sizeof(RT), (uint8_t *)buf);
+#define TIMES 100
+#define hash_t uint32_t
+auto get_rho(hash_t seed) {
+	hash_t x = seed;
+	for (hash_t n = 1;; n <<= 1) {
+		hash_t y = x;
+		for (hash_t rho = 0; rho < n;) {
+			hash_t buf[32 / sizeof(hash_t)];
+			SM3().join_last((uint8_t *)&x, sizeof(hash_t), (uint8_t *)buf);
+			x = buf[0];
+			if (rho++, x == y) {
+				return rho;
+			}
+		}
+	}
+}
+auto rho_method(hash_t seed) {
+	hash_t rho = get_rho(seed);
+	hash_t x = seed, y = seed;
+	for (int i = 0; i < rho; i++) {
+		hash_t buf[32 / sizeof(hash_t)];
+		SM3().join_last((uint8_t *)&x, sizeof(hash_t), (uint8_t *)buf);
 		x = buf[0];
 	}
 	for (;;) {
-		RT buf_x[32 / sizeof(RT)];
-		RT buf_y[32 / sizeof(RT)];
-		SM3().join_last((uint8_t *)&x, sizeof(RT), (uint8_t *)buf_x);
-		SM3().join_last((uint8_t *)&y, sizeof(RT), (uint8_t *)buf_y);
+		hash_t buf_x[32 / sizeof(hash_t)];
+		hash_t buf_y[32 / sizeof(hash_t)];
+		SM3().join_last((uint8_t *)&x, sizeof(hash_t), (uint8_t *)buf_x);
+		SM3().join_last((uint8_t *)&y, sizeof(hash_t), (uint8_t *)buf_y);
 		if (buf_x[0] == buf_y[0]) {
-			return std::pair<RT, RT>(x, y);
+			return std::pair<hash_t, hash_t>(x, y);
 		}
 		x = buf_x[0];
 		y = buf_y[0];
 	}
 }
 int main() {
-	RT buf[32 / sizeof(RT)];
-	std::pair<RT, RT> res;
-	do {
-		res = rho_method(rand());
-	} while (res.first == res.second);
-	SM3().join_last((uint8_t *)&res.first, sizeof(RT), (uint8_t *)buf);
-	printf("Ma = ");
-	print_digest((uint8_t *)&res.first, sizeof(RT));
-	printf("Ha = ");
-	print_digest((uint8_t *)buf, sizeof(RT));
-	SM3().join_last((uint8_t *)&res.second, sizeof(RT), (uint8_t *)buf);
-	printf("Mb = ");
-	print_digest((uint8_t *)&res.second, sizeof(RT));
-	printf("Hb = ");
-	print_digest((uint8_t *)buf, sizeof(RT));
+	hash_t buf[32 / sizeof(hash_t)];
+	int t = 0;
+	for (int i = 0; i < TIMES; i++) {
+		int seed = rand();
+		printf("seed = %d:\n", seed);
+		auto rec = clock();
+		auto res = rho_method(seed);
+		t += clock() - rec;
+		SM3().join_last((uint8_t *)&res.first, sizeof(hash_t), (uint8_t *)buf);
+		printf("Ma = ");
+		print_digest((uint8_t *)&res.first, sizeof(hash_t));
+		printf("Ha = ");
+		print_digest((uint8_t *)buf, sizeof(hash_t));
+		SM3().join_last((uint8_t *)&res.second, sizeof(hash_t), (uint8_t *)buf);
+		printf("Mb = ");
+		print_digest((uint8_t *)&res.second, sizeof(hash_t));
+		printf("Hb = ");
+		print_digest((uint8_t *)buf, sizeof(hash_t));
+	}
+	printf("average time = %d ms\n", t / TIMES);
 }
