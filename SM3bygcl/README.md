@@ -19,7 +19,7 @@ Project : implement the naïve birthday attack of reduced SM3
 
 根据生日攻击的原理，当计算的hash值超过$2^{n/2}$就有$1/2$的概率找到碰撞，由于SM3的安全强度超过个人计算机的计算量，因此对SM3做了简化，只取计算出来的$DLEN * 4$位(如16位)，取随机数计算hash，测试找到碰撞的概率。其中SM3调用gmssl库中的sm3算法。
 
-![pic](./ScreenShot/birthday.png)
+![pic](/SM3bygcl/ScreenShot/birthday.png)
 
 如上找到一个碰撞，16位的碰撞，大概用了6000次，在$[2^8,2^{16}]$中。
 
@@ -40,4 +40,4 @@ Project: implement length extension attack for SM3
 
 如图，`hash([1,2,3]||padding||[2,3,4]):`对应长度扩展攻击计算出来的hash值，`the real hash:`对应直接计算消息`[1,2,3]||padding||[2,3,4]`的hash值，可以看到两者是相等的，说明长度扩展攻击成功。
 
-![pic](./ScreenShot/LengthExtension.png)
+![pic](/SM3bygcl/ScreenShot/LengthExtension.png)
