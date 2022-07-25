@@ -28,7 +28,7 @@ g++ rho_method.cpp -std=c++20 -o rho_method.exe -O3
 ./rho_method.exe
 ```
 
-注：将 rho_method.cpp 中 hash_t 的定义修改为 uint64_t，并适当减小 TIMES 的数值，即可测试针对 *64* 位简化 SM3 算法的 Rho Method 攻击。
+*注：将 rho_method.cpp 中 `hash_t` 的定义修改为 `uint64_t`，并适当减小 `TIMES` 的数值，即可测试针对 64 位简化 SM3 算法的 Rho Method 攻击。*
 
 ### 测试结果
 
@@ -92,7 +92,7 @@ g++ merkle_tree.cpp -std=c++20 -o merkle_tree.exe -O3
 
 ### 思路
 
-创建 MerkleTree 类，通过递归实现其创建和遍历，验证某一元素是否存在时时先通过遍历找到其对应的叶子节点，若未找到则证明不存在，否则依次验证该叶子节点每个父节点是否正确，如果全部正确则证明存在，否则返回异常。
+创建 `MerkleTree` 类，通过递归实现其创建和遍历，验证某一元素是否存在时时先通过遍历找到其对应的叶子节点，若未找到则证明不存在，否则依次验证该叶子节点每个父节点是否正确，如果全部正确则证明存在，否则返回异常。
 
 ### 测试结果
 
