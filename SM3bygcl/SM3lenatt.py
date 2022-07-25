@@ -65,9 +65,9 @@ if __name__ == "__main__":
     addmsgpad = padding(addmsg)
     Mlen = len(addmsgpad)
     tempp = "%0128s" %hex(sum(addmsgpad[-1][len(addmsgpad[-1]) - i - 1] * (256 ** i) for i in range(len(addmsgpad[-1]))) + 512 * Mlen)[2:]
-    print(tempp)
+    #print(tempp)
     addmsgpad[-1] = [int(tempp[i:i + 2], base = 16) for i in range(0,128,2)]
-    print(addmsgpad)
+    #print(addmsgpad)
     temp = [int(digest[i:i + 8], base = 16) for i in range(0,64,8)]
     for i in range(len(addmsgpad)):
         digest1 = sm3.sm3_cf(temp, addmsgpad[i])
@@ -76,6 +76,6 @@ if __name__ == "__main__":
         result = '%s%08x' % (result, i)
     print("hash([1,2,3]||padding||[2,3,4]):", result)
     xpad = padding(x)[0]
-    print(xpad + addmsgstur)
+    #print(xpad + addmsgstur)
     digest2 = sm3.sm3_hash(xpad + addmsgstur)
     print("the real hash:", digest2)
