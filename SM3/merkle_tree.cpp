@@ -91,7 +91,7 @@ int main() {
 	mt.check(datalist[12345]);
 	printf("------------------------------------------------ Exclusion Proof ------------------------------------------------\n");
 	mt.check(datalist[100000]);
-	for (size_t i = 0; i < 100000; i++) {
+	for (size_t i = 0; i < 100001; i++) {
 		free(datalist[i].str);
 	}
 	free(datalist);
