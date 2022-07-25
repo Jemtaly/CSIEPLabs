@@ -2,15 +2,19 @@
 
 ## Birthday Attack
 
-针对 *32* 位简化 SM3 算法的生日攻击，在 O3 优化下耗时约 0.03 s, 最大内存占用量 4.7 MB.
+针对 *32* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击平均耗时约 24 ms, 最大内存占用量 4.7 MB.
 
 ![screenshot](/SM3/screenshots/birthday_attack.png)
 
 ## Rho Method
 
-针对 *64* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下耗时约 3 h, 另外针对 *32* 位简化 SM3 算法耗时约为 0.04 s.
+针对 *32* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下单次攻击平均耗时约 51 ms:
 
 ![screenshot](/SM3/screenshots/rho_method.png)
+
+另外针对 *64* 位简化 SM3 算法也进行了测试，耗时约为 30 min.
+
+![screenshot](/SM3/screenshots/rho_method_64.png)
 
 ## Length Extension Attack
 
