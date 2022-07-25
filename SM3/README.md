@@ -28,6 +28,8 @@ g++ rho_method.cpp -std=c++20 -o rho_method.exe -O3
 ./rho_method.exe
 ```
 
+注：将 rho_method.cpp 中 hash_t 的定义修改为 uint64_t，并适当减小 TIMES 的数值，即可测试针对 *64* 位简化 SM3 算法的 Rho Method 攻击。
+
 ### 测试结果
 
 针对 *32* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下单次攻击平均耗时约 51 ms:
