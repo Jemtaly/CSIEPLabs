@@ -4,8 +4,8 @@ from Crypto.Util.number import *
 import hashlib
 # y ^ 2 = x ^ 3 + a * x + b (mod p)
 a = 2
-b = 2
-p = 17
+b = 3
+p = 31
 
 def ECCADD(P, Q):
     if P == 0 :
@@ -62,24 +62,28 @@ def ECDSAVrfy(P, e, n, G, r, s):  #e = hash(m)
     else:
         return 0
 
+
 def pretend(G, P, n):
     u = random.randint(1, n)
     v = random.randint(1, n)
     R = ECCADD(ECCMUL(u, G), ECCMUL(v, P))
-    r = R[0] % n
+    if R == 0:
+        r = 0
+    else:
+        r = R[0] % n
     e = (r * u * inverse(v, n)) % n
     s = (r * inverse(v, n)) % n
     return e, r, s
 
 if __name__ == '__main__':
     m = '123'
-    G = [5, 1]
-    n = 19
-    d = 5
+    G = [3, 6]
+    n = 32
+    d = 6
     P = ECCMUL(d, G)
-    print(P)
+    #print(P)
     e = int(hashlib.sha256(str(m).encode()).hexdigest(),base = 16)
-    print(e)
+    #print(e)
     S = ECDSASign(d, e, n, G)
     r = S[0]
     s = S[1]
@@ -90,3 +94,5 @@ if __name__ == '__main__':
     print("forge signature: hash(m') = {}, r' = {}, s' = {}".format(e_, r_, s_))
     if ECDSAVrfy(P, e_, n, G, r_, s_) == 1:
         print("forged SignVrfy pass")
+
+
