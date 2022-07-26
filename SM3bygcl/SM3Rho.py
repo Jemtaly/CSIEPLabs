@@ -8,15 +8,33 @@ def s2l(s):
 
 def Rho():
     start = sm3.sm3_hash([randint(0, 2 ** 32)])
-    x = s2l(start)
-    h = []
+    x = s2l(start)[:]
+    y = s2l(start)[:]
+    l = 0
     while(1):
-        temp = sm3.sm3_hash(x)
-        if (temp[0:DLEN] in h):
+        x = sm3.sm3_hash(x)
+        tempx = x[:]
+        x = s2l(x)[0:DLEN]
+        y = sm3.sm3_hash(y)
+        y = s2l(y)[0:DLEN]
+        y = sm3.sm3_hash(y)
+        tempy = y[:]
+        y = s2l(y)[0:DLEN]
+        l = l + 1
+        print(tempx)
+        print(tempy)
+        print(l)
+        if (tempx[0:DLEN] == tempy[0:DLEN]):
             break
-        h.append(temp[0:DLEN])
-        temp = s2l(temp)
-    l = len(h)
+    # ####trivial method #######
+    # h = []
+    # while(1):
+    #     temp = sm3.sm3_hash(x)
+    #     if (temp[0:DLEN] in h):
+    #         break
+    #     h.append(temp[0:DLEN])
+    #     temp = s2l(temp)
+    # l = len(h)
     print(l)
     print("find the loop. The length of loop is {}".format(l))
     x = s2l(start)
