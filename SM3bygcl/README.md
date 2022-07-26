@@ -94,4 +94,8 @@ Project : implement the Rho method of reduced SM3
 
 结果如图，本次运行的循环长度是284，找到如图的两个碰撞，重新hash可验证16位碰撞成功。
 
-![pic](/SM3bygcl/ScreenShot/Rho.png)]
+![pic](/SM3bygcl/ScreenShot/Rho.png)
+
+下图为24位碰撞成功，循环长度为5296。
+
+![pic](/SM3bygcl/ScreenShot/Rho2.png)
