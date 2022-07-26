@@ -91,7 +91,10 @@ def pretend(G, P, n):
     u = random.randint(1, n)
     v = random.randint(1, n)
     R = ECCADD(ECCMUL(u, G), ECCMUL(v, P))
-    r = R[0] % n
+    if R == 0:
+        r = 0
+    else:
+        r = R[0] % n
     e = (r * u * inverse(v, n)) % n
     s = (r * inverse(v, n)) % n
     return e, r, s
