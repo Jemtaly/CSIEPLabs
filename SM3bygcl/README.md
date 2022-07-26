@@ -92,6 +92,6 @@ Project : implement the Rho method of reduced SM3
         tempy = y[:]
 ```
 
-结果如图，本次运行的循环长度是254，找到如图的两个碰撞，重新hash可验证16位碰撞成功。
+结果如图，本次运行的循环长度是284，找到如图的两个碰撞，重新hash可验证16位碰撞成功。
 
 ![pic](/SM3bygcl/ScreenShot/Rho.png)]
