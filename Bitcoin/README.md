@@ -13,15 +13,15 @@
 
 ```python
 def ECCADD(P, Q):
-    if (P[0] == 0) and (P[1] == 0):
+    if P == 0 :
         return Q
-    if (Q[0] == 0) and (Q[1] == 0):
+    if Q == 0:
         return P
     if (P == Q):
         lambd = ((3 * (P[0] ** 2) + a ) * inverse(2 * P[1], p)) % p
     else:
         if gcd(Q[0] - P[0], p) != 1 and gcd(Q[0] - P[0], p) != -1:
-            return [0, 0]
+            return 0
         else:
             lambd = ((Q[1] - P[1]) * inverse(Q[0] - P[0], p)) % p
     x = (lambd ** 2 - P[0] - Q[0]) % p
@@ -30,7 +30,7 @@ def ECCADD(P, Q):
 
 def ECCMUL(k, Q):
     if k == 0:
-        return [0,0]
+        return 0
     if k == 1:
         return Q
     if k >= 2:
@@ -59,7 +59,10 @@ def ECDSAVrfy(P, e, n, G, r, s):  #e = hash(m)
     t1 = (e * w) % n
     t2 = (r * w) % n
     X = ECCADD(ECCMUL(t1, G), ECCMUL(t2, P))
-    r_ = X[0]
+    if X == 0:
+        r_ = 0
+    else:
+        r_ = X[0]
     if r == r_:
         return 1
     else:
