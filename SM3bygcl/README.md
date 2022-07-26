@@ -12,7 +12,7 @@
 |SM3Rho.py|Project:implement the Rho method of reduced SM3|
 |SM3bygcl.c|Project:do your best to optimize SM3 implementation (software)|
 
-## SM3生日攻击
+## SM3 生日攻击
 
 files : SM3biratt.py
 
@@ -24,7 +24,7 @@ Project : implement the naïve birthday attack of reduced SM3
 
 如上找到一个碰撞，16位的碰撞，大概用了6000次，在$[2^8,2^{16}]$中。
 
-## SM3长度扩展攻击
+## SM3 长度扩展攻击
 
 files : SM3lenatt.py
 
