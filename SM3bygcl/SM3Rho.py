@@ -21,12 +21,12 @@ def Rho():
         tempy = y[:]
         y = s2l(y)[0:DLEN]
         l = l + 1
-        print(tempx)
-        print(tempy)
-        print(l)
+        # print(tempx)
+        # print(tempy)
+        # print(l)
         if (tempx[0:DLEN] == tempy[0:DLEN]):
             break
-    # ####trivial method #######
+    # ###### trivial method #######
     # h = []
     # while(1):
     #     temp = sm3.sm3_hash(x)
