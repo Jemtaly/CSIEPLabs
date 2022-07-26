@@ -49,21 +49,27 @@ files : SM3Rho.py
 
 Project : implement the Rho method of reduced SM3
 
-该项目参考了同组李岱耕的思路。
+朴素的做法可以是：首先，随机生成一个数做hash后作为start起始点，然后用一个列表把计算过的hash存下来，迭代进行hash，每次都判断hash值是否在圈中出现，若出现则说明形成环，结束循环。
 
-首先，随机生成一个数做hash后作为start起始点，然后用一个列表把计算过的hash存下来，迭代进行hash，每次都判断hash值是否在圈中出现，若出现则说明形成环，结束循环。（此处也可以用两个点进行迭代，一个快一个慢，比如$x = hash(x), y = hash(hash(y))$，若$x$和$y$出现碰撞，就说明形成环，该方法的好处则是用时间换空间，每次只需要存一个$x$和$y$，不需要把中间值存下，同样可以求得环的长度）
+可以用时间换空间，可以用两个点进行迭代，一个快一个慢，比如$x = hash(x), y = hash(hash(y))$，根据Floyd环的原理，$x$和$y$一定会相遇，若$x$和$y$出现碰撞，就说明形成环，该方法每次只需要存一个$x$和$y$，不需要把中间值存下，同样可以求得环的长度。
 
 ```
     start = sm3.sm3_hash([randint(0, 2 ** 32)])
-    x = s2l(start)
-    h = []
+    x = s2l(start)[:]
+    y = s2l(start)[:]
+    l = 0
     while(1):
-        temp = sm3.sm3_hash(x)
-        if (temp[0:DLEN] in h):
+        x = sm3.sm3_hash(x)
+        tempx = x[:]
+        x = s2l(x)[0:DLEN]
+        y = sm3.sm3_hash(y)
+        y = s2l(y)[0:DLEN]
+        y = sm3.sm3_hash(y)
+        tempy = y[:]
+        y = s2l(y)[0:DLEN]
+        l = l + 1
+        if (tempx[0:DLEN] == tempy[0:DLEN]):
             break
-        h.append(temp[0:DLEN])
-        temp = s2l(temp)
-    l = len(h)
 ```
 
 确定环的长度后，让x从start开始跑起，先跑循环的长度次，然后y再开始以同样的速度跑，这样x和y下次碰撞的时候就刚好是在x要进入环的时候，这时候产生的碰撞对应的消息值就是不同的了。
