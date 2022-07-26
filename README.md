@@ -15,7 +15,7 @@
 | [SM3](SM3) | 李岱耕 |
 | [SM3bygcl](SM3bygcl) | 郭灿林 |
 | [Bitcoin](Bitcoin) | 郭灿林 |
-| [Ethernum](Ethernum) | 郭灿林 |
+| [Ethereum](Ethereum) | 郭灿林 |
 | [SM2](SM2) | 李岱耕 |
 | [Real world cryptanalyses](Real%20world%20cryptanalyses) | 李婕 |
 
