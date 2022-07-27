@@ -82,7 +82,7 @@ func rho_method(seed):
 
 ![screenshot](screenshots/rho_method.png)
 
-另外针对 *64* 位简化 SM3 算法也进行了测试，耗时约为 30 min.
+另外针对 *64* 位简化 SM3 算法也进行了测试，当以 0 作为 seed 时耗时约为 15 min.
 
 ![screenshot](screenshots/rho_method_64.png)
 
