@@ -125,3 +125,7 @@ def test():
     c = sm2.encrypt(m)
     m = sm2.decrypt(c)
     print(m)
+
+
+if __name__ == '__main__':
+    test()
