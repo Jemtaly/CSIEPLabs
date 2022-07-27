@@ -1,39 +1,30 @@
-#!/usr/bin/python3
-import sys, random
-sys.setrecursionlimit(0x10000)
-def exgcd(a, b):
-    if b == 0:
-        return a, (1, 0)
-    d, (x, y) = exgcd(b, a % b)
-    return d, (y, x - a // b * y)
-def isprime(n):
-    if n == 2:
-        return True
-    if n < 2 or n & 1 == 0:
-        return False
-    for _ in range(16):
-        a = random.randrange(1, n)
-        d = n - 1
-        while d & 1 == 0:
-            t = pow(a, d, n)
-            if t == n - 1:
-                break
-            if t != 1:
-                return False
-            d >>= 1
-    return True
-def randprime(l):
-    while True:
-        r = random.getrandbits(l)
-        if isprime(r):
-            return r
-class EC:
-    def __init__(self, a, b, p):
+import random
+import gmssl.sm3
+
+
+def sm3hash(m):
+    return bytes.fromhex(gmssl.sm3.sm3_hash(bytearray(m)))
+
+
+def kdf(zin, klen):
+    rcnt = (klen - 1) // 32 + 1
+    ha = b''
+    for ct in range(1, rcnt + 1):
+        ha = ha + sm3hash(zin + ct.to_bytes(4, 'big'))
+    return ha
+
+
+class SM2:
+    def __init__(self, a, b, n, p, G, paralen):
+        self.n = n
         self.a = a
         self.b = b
         self.p = p
-    def check(self, P):
-        return not P or (P[0] * P[0] * P[0] - P[1] * P[1] + self.a * P[0] + self.b) % self.p == 0
+        self.G = G
+        self.paralen = paralen
+        self.d = random.randrange(1, n - 1)
+        self.P = self.mult(self.d, G)
+
     def add(self, P, Q):
         if not P:
             return Q
@@ -42,14 +33,95 @@ class EC:
         if P[0] == Q[0]:
             if (P[1] + Q[1]) % self.p == 0:
                 return
-            lmd = (3 * P[0] * Q[0] + self.a) * pow(P[1] + Q[1], self.p - 2, self.p) % self.p
+            lmd = (3 * P[0] * Q[0] + self.a) * \
+                pow(P[1] + Q[1], self.p - 2, self.p) % self.p
         else:
             lmd = (Q[1] - P[1]) * pow(Q[0] - P[0], self.p - 2, self.p) % self.p
         x = (lmd * lmd - P[0] - Q[0]) % self.p
-        y = (lmd * (P[0] - x) - Q[0]) % self.p
+        y = (lmd * (P[0] - x) - P[1]) % self.p
         return x, y
-    def mult(self, P, n):
+
+    def mult(self, n, P):
         if n == 0:
             return
-        Q = self.mult(P, n >> 1)
+        Q = self.mult(n >> 1, P)
         return self.add(self.add(Q, Q), P) if n & 1 else self.add(Q, Q)
+
+    def sign(self, M):
+        e = int.from_bytes(M, 'big')
+        '''
+        r = s = 0
+        while r == 0 or r + k == self.n or s == 0:
+            k = random.randrange(1, self.n)
+            x = self.mult(k, self.G)[0]
+            r = (e + x) % self.n
+            s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
+        '''
+        k = random.randrange(1, self.n)
+        x = self.mult(k, self.G)[0]
+        r = (e + x) % self.n
+        s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
+        return r.to_bytes(self.paralen, 'big') + s.to_bytes(self.paralen, 'big')
+
+    def verify(self, S, M):
+        r, s = int.from_bytes(S[:self.paralen], 'big'), int.from_bytes(
+            S[self.paralen:], 'big')
+        if not (0 < r < self.n and 0 < s < self.n):
+            return False
+        e = int.from_bytes(M, 'big')
+        t = (r + s) % self.n
+        if t == 0:
+            return False
+        x = self.add(self.mult(s, self.G), self.mult(t, self.P))[0]
+        R = (e + x) % self.n
+        return r == R
+
+    def p2b(self, P):
+        return P[0].to_bytes(self.paralen, 'big'), P[1].to_bytes(self.paralen, 'big')
+
+    def encrypt(self, M):
+        klen = len(M)
+        '''
+        t = bytes(klen)
+        while not any(t):
+            k = random.randrange(1, self.n)
+            x2, y2 = self.p2b(self.mult(k, self.P))
+            t = kdf(x2 + y2, klen)
+        '''
+        k = random.randrange(1, self.n)
+        x1, y1 = self.p2b(self.mult(k, self.G))
+        x2, y2 = self.p2b(self.mult(k, self.P))
+        t = kdf(x2 + y2, klen)
+        C1 = x1 + y1
+        C2 = bytes(a ^ b for a, b in zip(M, t))
+        C3 = sm3hash(x2 + M + y2)
+        return C1 + C2 + C3
+
+    def decrypt(self, C):
+        l2 = 2 * self.paralen
+        C1 = C[:l2]
+        C2 = C[l2:-32]
+        C3 = C[-32:]
+        klen = len(C2)
+        x2, y2 = self.p2b(self.mult(self.d, (int.from_bytes(
+            C1[:self.paralen], 'big'), int.from_bytes(C1[self.paralen:], 'big'))))
+        t = kdf(x2 + y2, klen)
+        assert any(t)
+        M = bytes(a ^ b for a, b in zip(C2, t))
+        assert sm3hash(x2 + M + y2) == C3
+        return M
+
+
+def test():
+    a = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC
+    b = 0x28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93
+    p = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF
+    n = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123
+    G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736a2f4f6779c59bdcee36b692153d0a9877cc62a474002df32e52139f0a0
+    sm2 = SM2(a, b, n, p, G, 32)
+    m = b'Hello, world!'
+    s = sm2.sign(m)
+    print(sm2.verify(s, m))
+    c = sm2.encrypt(m)
+    m = sm2.decrypt(c)
+    print(m)
