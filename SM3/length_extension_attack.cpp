@@ -32,8 +32,8 @@ int main() {
 	printf("Hc = ");
 	print_digest(buf_c, 32);
 	if (memcmp(buf_b, buf_c, 32)) {
-		printf("Verification Failed.\n");
+		printf("Verification failed.\n");
 	} else {
-		printf("Verification successful.\n");
+		printf("Verification succeeded.\n");
 	}
 }
