@@ -4,10 +4,8 @@ import pysmx.SM3
 
 def kdf(zin, klen):
     rcnt = (klen - 1) // 32 + 1
-    ha = b''
-    for ct in range(1, rcnt + 1):
-        ha = ha + pysmx.SM3.digest(zin + ct.to_bytes(4, 'big'))
-    return ha
+    ha = b''.join(pysmx.SM3.digest(zin + ct.to_bytes(4, 'big')) for ct in range(1, rcnt + 1))
+    return ha[:klen]
 
 
 class SM2:
