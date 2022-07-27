@@ -111,7 +111,7 @@ g++ length_extension_attack.cpp -std=c++20 -o length_extension_attack.exe -O3
 
 ```
 g++ sm3_test.cpp -std=c++20 -o sm3_test.exe -O3
-./sm3_test.exe
+./sm3_test.exe test_file
 ```
 
 ### 测试结果
@@ -138,7 +138,7 @@ g++ merkle_tree.cpp -std=c++20 -o merkle_tree.exe -O3
 
 ### 思路
 
-创建 `MerkleTree` 类，通过递归实现其创建和遍历，验证某一元素是否存在时时先通过遍历找到其对应的叶子节点，若未找到则证明不存在，否则依次验证该叶子节点每个父节点是否正确，如果全部正确则证明存在，否则返回异常。
+创建 `MerkleTree` 类，通过递归实现其创建和遍历，验证某一元素是否存在时，先通过遍历找到其对应的叶子节点，若未找到则证明不存在，否则依次验证该叶子节点每个父节点是否正确，如果全部正确则证明存在，否则返回异常。
 
 ### 测试结果
 
