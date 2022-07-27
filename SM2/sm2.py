@@ -1,16 +1,12 @@
 import random
-import gmssl.sm3
-
-
-def sm3hash(m):
-    return bytes.fromhex(gmssl.sm3.sm3_hash(bytearray(m)))
+import pysmx.SM3
 
 
 def kdf(zin, klen):
     rcnt = (klen - 1) // 32 + 1
     ha = b''
     for ct in range(1, rcnt + 1):
-        ha = ha + sm3hash(zin + ct.to_bytes(4, 'big'))
+        ha = ha + pysmx.SM3.digest(zin + ct.to_bytes(4, 'big'))
     return ha
 
 
@@ -49,18 +45,12 @@ class SM2:
 
     def sign(self, M):
         e = int.from_bytes(M, 'big')
-        '''
-        r = s = 0
+        r = 0
         while r == 0 or r + k == self.n or s == 0:
             k = random.randrange(1, self.n)
             x = self.mult(k, self.G)[0]
             r = (e + x) % self.n
             s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
-        '''
-        k = random.randrange(1, self.n)
-        x = self.mult(k, self.G)[0]
-        r = (e + x) % self.n
-        s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
         return r.to_bytes(self.paralen, 'big') + s.to_bytes(self.paralen, 'big')
 
     def verify(self, S, M):
@@ -76,25 +66,19 @@ class SM2:
         R = (e + x) % self.n
         return r == R
 
-    def p2b(self, P):
-        return P[0].to_bytes(self.paralen, 'big'), P[1].to_bytes(self.paralen, 'big')
-
     def encrypt(self, M):
         klen = len(M)
-        '''
         t = bytes(klen)
         while not any(t):
             k = random.randrange(1, self.n)
-            x2, y2 = self.p2b(self.mult(k, self.P))
+            kP = self.mult(k, self.P)
+            x2, y2 = kP[0].to_bytes(self.paralen, 'big'), kP[1].to_bytes(self.paralen, 'big')
             t = kdf(x2 + y2, klen)
-        '''
-        k = random.randrange(1, self.n)
-        x1, y1 = self.p2b(self.mult(k, self.G))
-        x2, y2 = self.p2b(self.mult(k, self.P))
-        t = kdf(x2 + y2, klen)
+        kG = self.mult(k, self.G)
+        x1, y1 = kG[0].to_bytes(self.paralen, 'big'), kG[1].to_bytes(self.paralen, 'big')
         C1 = x1 + y1
         C2 = bytes(a ^ b for a, b in zip(M, t))
-        C3 = sm3hash(x2 + M + y2)
+        C3 = pysmx.SM3.digest(x2 + M + y2)
         return C1 + C2 + C3
 
     def decrypt(self, C):
@@ -103,12 +87,14 @@ class SM2:
         C2 = C[l2:-32]
         C3 = C[-32:]
         klen = len(C2)
-        x2, y2 = self.p2b(self.mult(self.d, (int.from_bytes(
-            C1[:self.paralen], 'big'), int.from_bytes(C1[self.paralen:], 'big'))))
+        x1, x2 = C1[:self.paralen], C1[self.paralen:]
+        kG = int.from_bytes(x1, 'big'), int.from_bytes(x2, 'big')
+        kP = self.mult(self.d, kG)
+        x2, y2 = kP[0].to_bytes(self.paralen, 'big'), kP[1].to_bytes(self.paralen, 'big')
         t = kdf(x2 + y2, klen)
         assert any(t)
         M = bytes(a ^ b for a, b in zip(C2, t))
-        assert sm3hash(x2 + M + y2) == C3
+        assert pysmx.SM3.digest(x2 + M + y2) == C3
         return M
 
 
@@ -119,12 +105,18 @@ def test():
     n = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123
     G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736a2f4f6779c59bdcee36b692153d0a9877cc62a474002df32e52139f0a0
     sm2 = SM2(a, b, n, p, G, 32)
-    m = b'Hello, world!'
-    s = sm2.sign(m)
-    print(sm2.verify(s, m))
+    m = b'abc'
     c = sm2.encrypt(m)
-    m = sm2.decrypt(c)
-    print(m)
+    p = sm2.decrypt(c)
+    print('------------------------ Encrypt and Decrypt ------------------------')
+    print('m = 0x' + m.hex())
+    print('c = 0x' + c.hex())
+    print('p = 0x' + p.hex())
+    print('Decryption succeeded.' if p == m else 'Decryption failed.')
+    print('-------------------------- Sign and Verify --------------------------')
+    s = sm2.sign(m)
+    print('s = 0x' + s.hex())
+    print('Verification succeeded.' if sm2.verify(s, m) else 'Verification failed.')
 
 
 if __name__ == '__main__':
