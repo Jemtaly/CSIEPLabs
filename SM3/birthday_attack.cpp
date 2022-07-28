@@ -2,38 +2,38 @@
 #include <iostream>
 #include <unordered_map>
 #include "sm3.hpp"
-#define TIMES 100
-#define hash_t uint32_t
-auto birthday_attack(hash_t seed) {
-	std::unordered_map<hash_t, hash_t> map;
-	hash_t buf[32 / sizeof(hash_t)];
-	for (hash_t i = seed;; i++) {
-		SM3().join_last((uint8_t *)&i, sizeof(hash_t), (uint8_t *)buf);
-		if (map.count(buf[0])) {
-			return std::pair<hash_t, hash_t>(map[buf[0]], i);
+#define hash_size 4
+auto hash(uint64_t data) {
+	uint64_t buf[4];
+	SM3().join_last((uint8_t *)&data, hash_size, (uint8_t *)buf);
+	return buf[0] & (1ull << 8 * hash_size) - 1;
+}
+auto birthday_attack(uint64_t seed) {
+	std::unordered_map<uint64_t, uint64_t> map;
+	for (uint64_t i = seed;; i++) {
+		auto n = hash(i);
+		if (map.count(n)) {
+			return std::pair<uint64_t, uint64_t>(map[n], i);
 		}
-		map[buf[0]] = i;
+		map[n] = i;
 	}
 }
 int main() {
-	hash_t buf[32 / sizeof(hash_t)];
-	int t = 0;
-	for (int i = 0; i < TIMES; i++) {
-		int seed = rand();
-		printf("seed = %d:\n", seed);
-		auto rec = clock();
-		auto res = birthday_attack(seed);
-		t += clock() - rec;
-		SM3().join_last((uint8_t *)&res.first, sizeof(hash_t), (uint8_t *)buf);
-		printf("Ma = ");
-		print_digest((uint8_t *)&res.first, sizeof(hash_t));
-		printf("Ha = ");
-		print_digest((uint8_t *)buf, sizeof(hash_t));
-		SM3().join_last((uint8_t *)&res.second, sizeof(hash_t), (uint8_t *)buf);
-		printf("Mb = ");
-		print_digest((uint8_t *)&res.second, sizeof(hash_t));
-		printf("Hb = ");
-		print_digest((uint8_t *)buf, sizeof(hash_t));
-	}
-	printf("average time = %d ms\n", t / TIMES);
+	uint64_t buf[4];
+	int seed = 0;
+	printf("seed = %d:\n", seed);
+	auto start = clock();
+	auto res = birthday_attack(seed);
+	auto end = clock();
+	SM3().join_last((uint8_t *)&res.first, hash_size, (uint8_t *)buf);
+	printf("Ma = ");
+	print_digest((uint8_t *)&res.first, hash_size);
+	printf("Ha = ");
+	print_digest((uint8_t *)buf, hash_size);
+	SM3().join_last((uint8_t *)&res.second, hash_size, (uint8_t *)buf);
+	printf("Mb = ");
+	print_digest((uint8_t *)&res.second, hash_size);
+	printf("Hb = ");
+	print_digest((uint8_t *)buf, hash_size);
+	printf("time = %ld ms\n", end - start);
 }
