@@ -21,17 +21,19 @@
 在此目录下执行以下命令：
 
 ```
-g++ birthday_attack.cpp -std=c++20 -o birthday_attack.exe -O3
+clang++ birthday_attack.cpp -std=c++2a -o birthday_attack.exe -O3
 ./birthday_attack.exe
 ```
 
+*注：修改 birthday_attack.cpp 中 `hash_size` 的值可改变 hash 函数的输出字节数，例如，将 `hash_size` 设置为 `6` 即可测试针对 *48* 位简化 SM3 算法（即只保留原始 SM3 算法输出的前 48 位）的生日攻击。*
+
 ### 测试结果
 
-针对 *32* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击平均耗时约 24 ms, 最大内存占用量 4.7 MB.
+针对 *32* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击平均耗时约 30 ms, 最大内存占用量 4.7 MB.
 
 ![screenshot](screenshots/birthday_attack.png)
 
-针对 *48* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击耗时 11 s, 最大内存占用量 1.3 GB.
+针对 *48* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击耗时 12 s, 最大内存占用量 1.3 GB.
 
 ![screenshot](screenshots/birthday_attack_48.png)
 
@@ -42,11 +44,11 @@ g++ birthday_attack.cpp -std=c++20 -o birthday_attack.exe -O3
 在此目录下执行以下命令：
 
 ```
-g++ rho_method.cpp -std=c++20 -o rho_method.exe -O3
+clang++ rho_method.cpp -std=c++2a -o rho_method.exe -O3
 ./rho_method.exe
 ```
 
-*注：将 rho_method.cpp 中 `hash_t` 的定义修改为 `uint64_t`，并适当减小 `TIMES` 的数值，即可测试针对 64 位简化 SM3 算法的 Rho Method 攻击。*
+*注：修改 rho_method.cpp 中 `hash_size` 的值可改变 hash 函数的输出字节数，例如，将 `hash_size` 设置为 `8` 即可测试针对 *64* 位简化 SM3 算法（即只保留原始 SM3 算法输出的前 64 位）的 Rho Method 攻击。*
 
 ### 思路
 
@@ -82,11 +84,11 @@ func rho_method(seed):
 
 ### 测试结果
 
-针对 *32* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下单次攻击平均耗时约 51 ms:
+针对 *32* 位简化 SM3 算法的 Rho Method 攻击，经测试在 O3 优化下单次攻击耗时约 30 ms:
 
 ![screenshot](screenshots/rho_method.png)
 
-另外针对 *64* 位简化 SM3 算法也进行了测试，当以 0 作为 seed 时耗时约为 15 min.
+另外针对 *64* 位简化 SM3 算法也进行了测试，当以 0 作为 seed 时耗时约为 18 min.
 
 ![screenshot](screenshots/rho_method_64.png)
 
@@ -97,7 +99,7 @@ func rho_method(seed):
 在此目录下执行以下命令：
 
 ```
-g++ length_extension_attack.cpp -std=c++20 -o length_extension_attack.exe -O3
+clang++ length_extension_attack.cpp -std=c++2a -o length_extension_attack.exe -O3
 ./length_extension_attack.exe
 ```
 
@@ -114,7 +116,7 @@ g++ length_extension_attack.cpp -std=c++20 -o length_extension_attack.exe -O3
 在此目录下执行以下命令：
 
 ```
-g++ sm3_test.cpp -std=c++20 -o sm3_test.exe -O3
+clang++ sm3_test.cpp -std=c++2a -o sm3_test.exe -O3
 ./sm3_test.exe test_file
 ```
 
@@ -136,7 +138,7 @@ g++ sm3_test.cpp -std=c++20 -o sm3_test.exe -O3
 在此目录下执行以下命令：
 
 ```
-g++ merkle_tree.cpp -std=c++20 -o merkle_tree.exe -O3
+clang++ merkle_tree.cpp -std=c++2a -o merkle_tree.exe -O3
 ./merkle_tree.exe
 ```
 
