@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <iostream>
-#include <unordered_map>
 #include "sm3.hpp"
+#include <stdio.h>
+#include <string.h>
+#include <unordered_map>
 #define hash_size 6 // 取值不能大于 8
 auto hash(uint64_t data) {
 	uint64_t buf[4];
