@@ -18,11 +18,11 @@ files : SM3biratt.py
 
 Project : implement the naïve birthday attack of reduced SM3
 
-根据生日攻击的原理，当计算的hash值超过$2^{n/2}$就有$1/2$的概率找到碰撞，由于SM3的安全强度超过个人计算机的计算量，因此对SM3做了简化，只取计算出来的$DLEN * 4$位(如16位)，取随机数计算hash，测试找到碰撞的概率。其中SM3调用gmssl库中的sm3算法。
+根据生日攻击的原理，当计算的hash值超过$2^{n/2}$就有$1/2$的概率找到碰撞，由于SM3的安全强度超过个人计算机的计算量，因此对SM3做了简化，只取计算出来的$DLEN * 4$位(如16位)，取随机数计算hash，每次计算完检验一下列表中是否有该hash值，若有，则找到碰撞，否则，存入列表中。其中SM3调用gmssl库中的sm3算法。
+
+如下图，找到一个32位的碰撞，计算了36671次hash。
 
 ![pic](/SM3bygcl/ScreenShot/birthday.png)
-
-如上找到一个碰撞，16位的碰撞，大概用了6000次，在$[2^8,2^{16}]$中。
 
 ## SM3 长度扩展攻击
 
@@ -49,9 +49,7 @@ files : SM3Rho.py
 
 Project : implement the Rho method of reduced SM3
 
-朴素的做法可以是：首先，随机生成一个数做hash后作为start起始点，然后用一个列表把计算过的hash存下来，迭代进行hash，每次都判断hash值是否在圈中出现，若出现则说明形成环，结束循环。
-
-可以用时间换空间，可以用两个点进行迭代，一个快一个慢，比如$x = hash(x), y = hash(hash(y))$，根据Floyd环的原理，$x$和$y$一定会相遇，若$x$和$y$出现碰撞，就说明形成环，该方法每次只需要存一个$x$和$y$，不需要把中间值存下，同样可以求得环的长度。
+Rho方法相对于生日攻击来说，是利用时间换空间，可以用两个点进行迭代，一个快一个慢，比如$x = hash(x), y = hash(hash(y))$，根据Floyd环的原理，$x$和$y$一定会相遇，若$x$和$y$出现碰撞，就说明形成环，该方法每次只需要存一个$x$和$y$，不需要把中间值存下，同样可以求得环的长度。
 
 ```
     start = sm3.sm3_hash([randint(0, 2 ** 32)])
@@ -67,35 +65,44 @@ Project : implement the Rho method of reduced SM3
         y = sm3.sm3_hash(y)
         tempy = y[:]
         y = s2l(y)[0:DLEN]
-        l = l + 1
+        # print(tempx)
+        # print(tempy)
+        # print(l)
         if (tempx[0:DLEN] == tempy[0:DLEN]):
+            break
+    endx = x[:]
+    while(1):
+        l = l + 1
+        x = sm3.sm3_hash(x)
+        x = s2l(x)[0:DLEN]
+        if (x == endx[0:DLEN]):
             break
 ```
 
 确定环的长度后，让x从start开始跑起，先跑循环的长度次，然后y再开始以同样的速度跑，这样x和y下次碰撞的时候就刚好是在x要进入环的时候，这时候产生的碰撞对应的消息值就是不同的了。
 
 ```
-    x = s2l(start)
-    y = s2l(start)
+    x = s2l(start)[:]
+    y = s2l(start)[:]
     for i in range(l):
         x = sm3.sm3_hash(x)
-        x = s2l(x)
-    print(x)
+        x = s2l(x)[0:DLEN]
+    #print(x)
     while(1):
         x = sm3.sm3_hash(x)
         y = sm3.sm3_hash(y)
         if(x[0:DLEN] == y[0:DLEN]):
             return [tempx, tempy]
-        x = s2l(x)
+        x = s2l(x)[0:DLEN]
         tempx = x[:]
-        y = s2l(y)
+        y = s2l(y)[0:DLEN]
         tempy = y[:]
 ```
 
-结果如图，本次运行的循环长度是284，找到如图的两个碰撞，重新hash可验证16位碰撞成功。
+结果如图，本次运行的循环长度是19580，找到如图的两个碰撞，重新hash可验证32位碰撞成功。
 
 ![pic](/SM3bygcl/ScreenShot/Rho.png)
 
-下图为24位碰撞成功，循环长度为5296。
+下图为64位碰撞成功，循环长度为。
 
 ![pic](/SM3bygcl/ScreenShot/Rho2.png)
