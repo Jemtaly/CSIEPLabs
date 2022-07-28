@@ -2,7 +2,7 @@
 #include <iostream>
 #include <unordered_map>
 #include "sm3.hpp"
-#define hash_size 4 // 取值不能大于 8
+#define hash_size 6 // 取值不能大于 8
 auto hash(uint64_t data) {
 	uint64_t buf[4];
 	SM3().join_last((uint8_t *)&data, hash_size, (uint8_t *)buf);
@@ -20,20 +20,21 @@ auto birthday_attack(uint64_t seed) {
 }
 int main() {
 	uint64_t buf[4];
-	int seed = 0;
-	printf("seed = %d:\n", seed);
+	uint64_t seed = 0;
+	printf("seed = ");
+	print_digest((uint8_t *)&seed, hash_size);
 	auto start = clock();
 	auto res = birthday_attack(seed);
 	auto end = clock();
 	SM3().join_last((uint8_t *)&res.first, hash_size, (uint8_t *)buf);
-	printf("Ma = ");
+	printf("Ma   = ");
 	print_digest((uint8_t *)&res.first, hash_size);
-	printf("Ha = ");
+	printf("Ha   = ");
 	print_digest((uint8_t *)buf, hash_size);
 	SM3().join_last((uint8_t *)&res.second, hash_size, (uint8_t *)buf);
-	printf("Mb = ");
+	printf("Mb   = ");
 	print_digest((uint8_t *)&res.second, hash_size);
-	printf("Hb = ");
+	printf("Hb   = ");
 	print_digest((uint8_t *)buf, hash_size);
 	printf("time = %ld ms\n", end - start);
 }
