@@ -45,16 +45,18 @@ auto rho_method(hash_t seed) {
 }
 int main() {
 	hash_t seed = {};
+	printf("seed = ");
+	print_digest(seed.data, hash_size);
 	auto start = clock();
 	auto res = rho_method(seed);
 	auto end = clock();
-	printf("Ma = ");
+	printf("Ma   = ");
 	print_digest(res.first.data, hash_size);
-	printf("Ha = ");
+	printf("Ha   = ");
 	print_digest(res.first.next().data, hash_size);
-	printf("Mb = ");
+	printf("Mb   = ");
 	print_digest(res.second.data, hash_size);
-	printf("Hb = ");
+	printf("Hb   = ");
 	print_digest(res.second.next().data, hash_size);
 	printf("time = %ld ms\n", end - start);
 }
