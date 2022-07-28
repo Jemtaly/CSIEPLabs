@@ -1,4 +1,6 @@
 #pragma once
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 #include <array>
 #define ROL32(x, n) ((x) << (n) | (x) >> (32 - (n)))
