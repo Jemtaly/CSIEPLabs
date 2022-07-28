@@ -1,8 +1,9 @@
-#include "sm3.hpp"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <unordered_map>
-#define hash_size 6 // 取值不能大于 8
+#include "sm3.hpp"
+#define hash_size 4	 // 取值不能大于 8
 auto hash(uint64_t data) {
 	uint64_t buf[4];
 	SM3().join_last((uint8_t *)&data, hash_size, (uint8_t *)buf);

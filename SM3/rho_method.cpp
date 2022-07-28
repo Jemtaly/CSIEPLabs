@@ -1,6 +1,7 @@
-#include "sm3.hpp"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include "sm3.hpp"
 #define hash_size 4
 struct hash_t {
 	uint8_t data[hash_size];
@@ -11,7 +12,7 @@ struct hash_t {
 		memcpy(result.data, buf, hash_size);
 		return result;
 	}
-	bool operator==(const hash_t &rval) const {
+	bool operator==(hash_t const &rval) const {
 		return !memcmp(data, rval.data, hash_size);
 	}
 };
@@ -29,7 +30,7 @@ auto get_rho(const hash_t &seed) {
 	return rho;
 }
 */
-auto get_rho(const hash_t &seed) {
+auto get_rho(hash_t const &seed) {
 	hash_t x = seed;
 	for (uint64_t n = 1;; n <<= 1) {
 		hash_t y = x;
@@ -41,7 +42,7 @@ auto get_rho(const hash_t &seed) {
 		}
 	}
 }
-auto rho_method(const hash_t &seed) {
+auto rho_method(hash_t const &seed) {
 	uint64_t rho = get_rho(seed);
 	hash_t x = seed, y = seed;
 	for (uint64_t i = 0; i < rho; i++) {
