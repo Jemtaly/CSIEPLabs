@@ -113,6 +113,7 @@ class SM2:
         klen = len(C2)
         x1, x2 = C1[:self.m], C1[self.m:]
         kG = int.from_bytes(x1, 'big'), int.from_bytes(x2, 'big')
+        assert self.check(kG)
         kP = self.mult(self.d, kG)
         x2, y2 = kP[0].to_bytes(self.m, 'big'), kP[1].to_bytes(self.m, 'big')
         t = kdf(x2 + y2, klen)
