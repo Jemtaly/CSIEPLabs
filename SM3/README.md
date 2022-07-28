@@ -122,7 +122,7 @@ clang++ sm3_test.cpp -std=c++2a -o sm3_test.exe -O3
 
 ### 测试结果
 
-经测试，优化后的算法加密 1 GB 文件耗时约 3.8 s.
+经测试，优化后的算法在 O3 优化下计算 1 GB 文件的哈希值耗时约 3.8 s，使用 GmSSL 中的算法则需要约 10s.
 
 ![screenshot](screenshots/sm3_test.png)
 
