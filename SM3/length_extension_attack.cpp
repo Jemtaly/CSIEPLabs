@@ -1,6 +1,6 @@
-#include <stdlib.h>
-#include <iostream>
 #include "sm3.hpp"
+#include <stdio.h>
+#include <string.h>
 auto length_extension_attack(uint8_t *hash, uint64_t len) {
 	SM3 sm3;
 	for (int j = 0; j < 8; j++) {
