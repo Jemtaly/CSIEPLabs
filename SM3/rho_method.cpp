@@ -1,6 +1,6 @@
-#include <stdlib.h>
-#include <iostream>
 #include "sm3.hpp"
+#include <stdio.h>
+#include <string.h>
 #define hash_size 4
 struct hash_t {
 	uint8_t data[hash_size];
