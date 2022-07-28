@@ -15,7 +15,8 @@ struct hash_t {
 		return !memcmp(data, rval.data, hash_size);
 	}
 };
-auto get_rho_original(const hash_t &seed) {
+/*
+auto get_rho(const hash_t &seed) {
 	hash_t x = seed, y = seed;
 	do {
 		x = x.next();
@@ -27,6 +28,7 @@ auto get_rho_original(const hash_t &seed) {
 	} while (rho++, y != x);
 	return rho;
 }
+*/
 auto get_rho(const hash_t &seed) {
 	hash_t x = seed;
 	for (uint64_t n = 1;; n <<= 1) {
@@ -45,7 +47,7 @@ auto rho_method(const hash_t &seed) {
 	for (uint64_t i = 0; i < rho; i++) {
 		x = x.next();
 	}
-	for (uint64_t len = 0;; len++) {
+	for (;;) {
 		auto x_tmp = x.next();
 		auto y_tmp = y.next();
 		if (x_tmp == y_tmp) {
