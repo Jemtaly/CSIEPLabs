@@ -36,7 +36,7 @@ class SM2:
         self.b = b % p
         self.p = p
         assert isprime(n) and n > 2 ** 191 and n * n > 16 * p and \
-            self.check(G) and self.mult(n, G) == None
+            self.check(G) and not self.mult(n, G)
         self.n = n % p
         self.G = G[0] % p, G[1] % p
         self.d = random.randrange(1, n - 1)
