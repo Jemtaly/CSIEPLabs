@@ -20,7 +20,7 @@ auto get_rho(hash_t seed) {
 auto rho_method(hash_t seed) {
 	hash_t rho = get_rho(seed);
 	hash_t x = seed, y = seed;
-	for (int i = 0; i < rho; i++) {
+	for (hash_t i = 0; i < rho; i++) {
 		hash_t buf[32 / sizeof(hash_t)];
 		SM3().join_last((uint8_t *)&x, sizeof(hash_t), (uint8_t *)buf);
 		x = buf[0];
