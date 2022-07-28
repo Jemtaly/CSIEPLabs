@@ -1,6 +1,7 @@
-#include <stdlib.h>
-#include <iostream>
 #include "sm3.hpp"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 struct data_t {
 	size_t len;
 	uint8_t *str;
