@@ -111,8 +111,8 @@ class SM2:
         C2 = C[l2:-32]
         C3 = C[-32:]
         klen = len(C2)
-        x1, x2 = C1[:self.m], C1[self.m:]
-        kG = int.from_bytes(x1, 'big'), int.from_bytes(x2, 'big')
+        x1, y1 = C1[:self.m], C1[self.m:]
+        kG = int.from_bytes(x1, 'big'), int.from_bytes(y1, 'big')
         assert self.check(kG)
         kP = self.mult(self.d, kG)
         x2, y2 = kP[0].to_bytes(self.m, 'big'), kP[1].to_bytes(self.m, 'big')
