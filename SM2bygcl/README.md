@@ -8,13 +8,15 @@
 
 ## ECDSA的弱点
 
+files : ECDSA.py
 
+Project : verify the above pitfalls with proof-of-concept code
 
 ### Leaking $k$ leads to leaking of $d$
 
 根据ECDSA的签名算法，有$s = k^{-1}(e + dr) \pmod{n}$，可推得$d = (sk - e)  r^{-1} \pmod{n}$，若已知$k$，则可以直接得到$d$。
 
-```
+```python
 def k2d(k, G, P, n, e, r, s):
     d = ((s * k - e) * inverse(r, n)) % n
     return d
@@ -28,35 +30,64 @@ def k2d(k, G, P, n, e, r, s):
 
 若两次签名$(r_1,s_1)$和$(r_2,s_2)$使用同一个$k$，那么有$r = r_1 = r_2$,$s_1=k^{-1}(e_1+dr),s_2=k^{-1}(e_2+dr)$，即$ks_1=(e_1+dr),ks_2=(e_2+dr)$，两式相除可得$s_1/s_2=(e_1+dr)/(e_2+dr)$，整理可得$s_1e_2/s_2 +s_1dr/s_2 = e_1 + dr, d= (e_1-s_1e_2/s_2)/(s_1r/s_2-r),d = (e_1s_2-s_1e_2)/(s_1r-rs_2)$ 。
 
-```
+```python
 def rek2d(k1, k2, G, P, n, e1, e2, r1, r2, s1, s2):
     r = r1
     d = ((e1 * s2 - s1 * e2) * inverse(s1 * r - r * s2, n))  % n
     return d
 ```
 
+运行结果如下：
+
+![pic](rek2d.png)
+
 ### Two users, using $k$ leads to leaking of $d$, that is they can deduce each other’s $d$
 
 若两个用户使用同样的$k$加密签名，那么有$r = r_1 = r_2, s_1=k^{-1}(e_1+d_1r),s_2=k^{-1}(e_2+d_1r) $，即$ks_1=(e_1+d_1r),ks_2=(e_2+d_2r)$，两式相除可得$s_1/s_2=(e_1+d_1r)/(e_2+d_2r)$，若对于用户2已知$d_2$，则可得$d_1 = (s_1(e_2+d_2r)/s_2 - e_1)/r$，同理也可由$d_1$求得$d_2$。
 
-```
+```python
 def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, r2, s1, s2):
     r = r1
     d2 = (s1*(e2+d2*r)*inverse(s2,n)-e1)*inverse(r,n)
     return d2
 ```
 
+运行结果如下：
+
+![pic](same_k_d22d1.png)
+
 ### Malleability of ECDSA, e.g. $(r,s)$ and $(r,-s)$ are both valid signatures, lead to blockchain network split
 
 对于$(r,s)$验签，计算$es^{-1}G+rs^{-1}P=(x',y')$，若$r = x'$则通过验证；对于$(r,-s)$，计算
 $e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐标同样是$x'$，可通过验证。
-```
+```python
 
 ```
+
+运行结果如下：
+
+![pic](.png)
 
 ### Ambiguity of DER encode could lead to blockchain network split
 
+查阅bitcoin的源码https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki，如下，定义了DER编码的具体规则。
 
+```
+DER encoding
+
+For reference, here is how to encode signatures correctly in DER format.
+
+0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S] [sighash-type]
+
+total-length: 1-byte length descriptor of everything that follows, excluding the sighash byte.
+R-length: 1-byte length descriptor of the R value that follows.
+R: arbitrary-length big-endian encoded R value. It cannot start with any 0x00 bytes, unless the first byte that follows is 0x80 or higher, in which case a single 0x00 is required.
+S-length: 1-byte length descriptor of the S value that follows.
+S: arbitrary-length big-endian encoded S value. The same rules apply as for R.
+sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81, 0x82 and 0x83 are allowed).
+```
+
+由于bitcoin一直调用的是openssl中的算法，后来openssl更新了DER编码，而有些区块的hash值还是依据没有DER编码计算的，这就导致同一个签名会被编码成不同的二进制串，最后区块得到的hash值不同，从而导致区块链的分裂。
 
 ### One can forge signature if the verification does not check $m$
 
@@ -64,3 +95,14 @@ $e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐�
 
 ### Same $d$ and $k$, used in ECDSA & Schnorr signature, leads to leaking of $d$
 
+根据ECDSA签名算法有$s_1k=e_1+dr$，Schnorr签名有$s_2=k+e_2d$，联立可得$d = (s_1s_2-e_1)/(s_1e_2+r)$。
+
+```python
+def ECDSA_Schnorr(G, P, n, e1, e2, r1, s1, R, s2):
+    d = ((s1*s2 - e1) * inverse(s1*e2+r, n)) % n
+    return d
+```
+
+运行结果如下：
+
+![pic](ECDSA_Schnorr.png)
