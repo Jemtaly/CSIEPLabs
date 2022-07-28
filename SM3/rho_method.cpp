@@ -11,11 +11,23 @@ struct hash_t {
 		memcpy(result.data, buf, hash_size);
 		return result;
 	}
-	bool operator==(const auto &rval) const {
+	bool operator==(const hash_t &rval) const {
 		return !memcmp(data, rval.data, hash_size);
 	}
 };
-auto get_rho(hash_t seed) {
+auto get_rho_original(const hash_t &seed) {
+	hash_t x = seed, y = seed;
+	do {
+		x = x.next();
+		y = y.next().next();
+	} while (x != y);
+	uint64_t rho = 0;
+	do {
+		x = x.next();
+	} while (rho++, y != x);
+	return rho;
+}
+auto get_rho(const hash_t &seed) {
 	hash_t x = seed;
 	for (uint64_t n = 1;; n <<= 1) {
 		hash_t y = x;
@@ -27,13 +39,13 @@ auto get_rho(hash_t seed) {
 		}
 	}
 }
-auto rho_method(hash_t seed) {
+auto rho_method(const hash_t &seed) {
 	uint64_t rho = get_rho(seed);
 	hash_t x = seed, y = seed;
 	for (uint64_t i = 0; i < rho; i++) {
 		x = x.next();
 	}
-	for (;;) {
+	for (uint64_t len = 0;; len++) {
 		auto x_tmp = x.next();
 		auto y_tmp = y.next();
 		if (x_tmp == y_tmp) {
