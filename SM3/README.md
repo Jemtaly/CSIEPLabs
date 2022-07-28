@@ -88,9 +88,13 @@ func rho_method(seed):
 
 ![screenshot](screenshots/rho_method.png)
 
-另外针对 *64* 位简化 SM3 算法也进行了测试，当以 0 作为 seed 时耗时约为 18 min.
+针对 *64* 位简化 SM3 算法的 Rho Method 攻击，在 O3 优化下单次攻击耗时约 18 min:
 
 ![screenshot](screenshots/rho_method_64.png)
+
+另外针对 *72* 位简化 SM3 算法也进行了测试并找到一组碰撞，耗时约 11 h.（由于进行该测试时，程序的具体实现和现在略有不同，所以实际编译运行的结果可能与截图中的有出入）
+
+![screenshot](screenshots/rho_method_72.png)
 
 ## Length Extension Attack
 
