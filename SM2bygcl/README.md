@@ -16,7 +16,7 @@ Project : verify the above pitfalls with proof-of-concept code
 
 如图，用私钥$d$签署的签名，能正确通过验证。具体ECDSA实现见`/Projects/Bitcoin/`。
 
-
+![pic](/Projects/SM2bygcl/ScreenShot/ECDSAsig.png)
 
 ### Leaking $k$ leads to leaking of $d$
 
