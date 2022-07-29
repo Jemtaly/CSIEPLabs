@@ -41,9 +41,9 @@ clang++ birthday_attack.cpp -std=c++2a -o birthday_attack.exe -O3
 
 ![screenshot](screenshots/birthday_attack_48.png)
 
-针对 *56* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击耗时间约 10 min, 最大内存占用量 20.1 GB.
+针对 *64* 位简化 SM3 算法的生日攻击，在 O3 优化下单次攻击耗时间约 40 min, 最大内存占用量约 90 GB.
 
-![screenshot](screenshots/birthday_attack_56.png)
+![screenshot](screenshots/birthday_attack_64.png)
 
 ## Rho Method
 
