@@ -91,7 +91,6 @@ class SM2:
         r = 0
         while r == 0 or r + k == self.n or s == 0:
             k = self.deterministic_generate_k(E) if rfc6979 else random.randrange(1, self.n)
-            print(hex(k))
             x = self.mult(k, self.G)[0]
             r = (e + x) % self.n
             s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
