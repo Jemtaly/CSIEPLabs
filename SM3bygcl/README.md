@@ -24,6 +24,10 @@ Project : implement the naïve birthday attack of reduced SM3
 
 ![pic](/SM3bygcl/ScreenShot/birthday.png)
 
+下图为48位的碰撞，计算了13413973次hash。
+
+![pic](/SM3bygcl/ScreenShot/birthday48.png)
+
 ## SM3 长度扩展攻击
 
 files : SM3lenatt.py
@@ -103,6 +107,6 @@ Rho方法相对于生日攻击来说，是利用时间换空间，可以用两�
 
 ![pic](/SM3bygcl/ScreenShot/Rho.png)
 
-下图为64位碰撞成功，循环长度为。
+下图为48位碰撞成功，循环长度为1578466。
 
-![pic](/SM3bygcl/ScreenShot/Rho2.png)
+![pic](/SM3bygcl/ScreenShot/Rho48.png)
