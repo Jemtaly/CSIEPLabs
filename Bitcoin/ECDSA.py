@@ -2,7 +2,6 @@ from numpy import *
 import random
 from Crypto.Util.number import * 
 import hashlib
-import ecdsa
 # y ^ 2 = x ^ 3 + a * x + b (mod p)
 a = 2
 b = 3
