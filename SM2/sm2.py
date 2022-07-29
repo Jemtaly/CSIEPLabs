@@ -1,3 +1,4 @@
+import hmac
 import random
 import pysmx
 
@@ -67,22 +68,41 @@ class SM2:
         Q = self.mult(n >> 1, P)
         return self.add(self.add(Q, Q), P) if n & 1 else self.add(Q, Q)
 
-    def sign(self, M):
-        e = int.from_bytes(M, 'big')
+    def deterministic_generate_k(self, M):
+        V = bytes(1 for _ in range(32))
+        K = bytes(0 for _ in range(32))
+        K = hmac.new(K, V + b'\x00' + self.d.to_bytes(self.m, 'big') + M, pysmx.SM3.SM3).digest()
+        V = hmac.new(K, V, pysmx.SM3.SM3).digest()
+        K = hmac.new(K, V + b'\x01' + self.d.to_bytes(self.m, 'big') + M, pysmx.SM3.SM3).digest()
+        V = hmac.new(K, V, pysmx.SM3.SM3).digest()
+        while True:
+            T = bytes()
+            while len(T) < self.m:
+                V = hmac.new(K, V, pysmx.SM3.SM3).digest()
+                T += V
+            k = int.from_bytes(T, 'big')
+            if 0 < k < self.n:
+                return k
+            K = hmac.new(K, V + b'\x00', pysmx.SM3.SM3).digest()
+            V = hmac.new(K, V, pysmx.SM3.SM3).digest()
+
+    def sign(self, E, rfc6979=False):
+        e = int.from_bytes(E, 'big')
         r = 0
         while r == 0 or r + k == self.n or s == 0:
-            k = random.randrange(1, self.n)
+            k = self.deterministic_generate_k(E) if rfc6979 else random.randrange(1, self.n)
+            print(hex(k))
             x = self.mult(k, self.G)[0]
             r = (e + x) % self.n
             s = pow(self.d + 1, self.n - 2, self.n) * (k - r * self.d) % self.n
         return r.to_bytes(self.m, 'big') + s.to_bytes(self.m, 'big')
 
-    def verify(self, S, M):
+    def verify(self, S, E):
         r = int.from_bytes(S[:self.m], 'big')
         s = int.from_bytes(S[self.m:], 'big')
         if not (0 < r < self.n and 0 < s < self.n):
             return False
-        e = int.from_bytes(M, 'big')
+        e = int.from_bytes(E, 'big')
         t = (r + s) % self.n
         if t == 0:
             return False
