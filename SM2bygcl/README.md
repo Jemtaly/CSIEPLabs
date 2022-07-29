@@ -5,6 +5,7 @@
 |文件|项目|
 |-|-|
 |ECDSA.py|Project: verify the above pitfalls with proof-of-concept code|
+|PGP.py|Project: Implement a PGP scheme with SM2|
 
 ## ECDSA的弱点
 
@@ -117,3 +118,47 @@ def ECDSA_Schnorr(G, P, n, e1, e2, r1, s1, R, s2):
 运行结果如下：
 
 ![pic](ECDSA_Schnorr.png)
+
+## 使用SM2实现PGP
+
+files : PGP.py
+
+Project : Implement a PGP scheme with SM2
+
+参考资料：https://blog.csdn.net/m0_46743327/article/details/124629798
+
+结果如图，正确对密钥进行协商，并成功加解密信息。
+
+![pic](./ScreenShot/PGP.png)
+
+该PGP实现使用gmssl库中的sm2算法，实现了基于SM2的密钥交换和消息加密传输和解密。
+
+首先，用`generate_key`函数生成随机的用于对称加密算法的密钥。
+
+```
+def generate_key():
+    x = str(random.randint(0, 2 ** 32))
+    m = hashlib.md5()
+    m.update(x.encode("utf-8"))
+    return m.hexdigest()[0 : 16]
+```
+
+发送方使用生成的对称密钥对要传输的明文进行SM4算法加密。同时用要进行交流的一方的公钥对对称密钥进行加密，使用非对称加密算法SM2。
+
+```
+    crysm4 = CryptSM4()
+    crysm4.set_key(key, SM4_ENCRYPT)
+    plaintext = 'fixedpoint'
+    ciphertext = crysm4.crypt_ecb(plaintext.encode())
+    sm2crypt = sm2.CryptSM2(public_key=public_key, private_key=private_key)
+    enckey = sm2crypt.encrypt(key)
+```
+
+接受方接受到加密的密钥，使用自己的私钥进行解密，得到用于对称密码算法的密钥，然后对密文进行解密。
+
+```
+    deckey = sm2crypt.decrypt(enckey)
+    crysm42 = CryptSM4()
+    crysm42.set_key(deckey, SM4_DECRYPT)
+    dectext = crysm42.crypt_ecb(ciphertext)
+```
