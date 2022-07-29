@@ -1,4 +1,5 @@
 import sm2
+import pysmx
 
 
 def sm2_test():
@@ -26,9 +27,11 @@ def sm2_test():
     print('P = 0x' + P.hex())
     print('Decryption succeeded.' if P == M else 'Decryption failed.')
     print('---------------------------- Sign and Verify ----------------------------')
-    S = sm2obj.sign(M)
+    E = pysmx.SM3.digest(M)
+    print('E = 0x' + E.hex())
+    S = sm2obj.sign(E, rfc6979=True)
     print('S = 0x' + S.hex())
-    print('Verification succeeded.' if sm2obj.verify(S, M) else 'Verification failed.')
+    print('Verification succeeded.' if sm2obj.verify(S, E) else 'Verification failed.')
 
 
 if __name__ == '__main__':
