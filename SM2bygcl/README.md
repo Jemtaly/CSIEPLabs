@@ -12,6 +12,12 @@ files : ECDSA.py
 
 Project : verify the above pitfalls with proof-of-concept code
 
+### ECDSA签名算法验证
+
+如图，用私钥$d$签署的签名，能正确通过验证。具体ECDSA实现见`/Projects/Bitcoin/`。
+
+![pic](/Projects/SM2bygcl/ScreenShot/ECDSAsig.png)
+
 ### Leaking $k$ leads to leaking of $d$
 
 根据ECDSA的签名算法，有$s = k^{-1}(e + dr) \pmod{n}$，可推得$d = (sk - e)  r^{-1} \pmod{n}$，若已知$k$，则可以直接得到$d$。
@@ -24,7 +30,7 @@ def k2d(k, G, P, n, e, r, s):
 
 运行结果如下：
 
-![pic](k2d.png)
+![pic](/Projects/SM2bygcl/ScreenShot/k2d.png)
 
 ### Reusing $k$ leads to leaking of $d$
 
@@ -39,7 +45,7 @@ def rek2d(k1, k2, G, P, n, e1, e2, r1, s1, r2, s2):
 
 运行结果如下：
 
-![pic](rek2d.png)
+![pic](/Projects/SM2bygcl/ScreenShot/rek2d.png)
 
 ### Two users, using $k$ leads to leaking of $d$, that is they can deduce each other’s $d$
 
@@ -54,7 +60,7 @@ def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, s1, r2, s2):
 
 运行结果如下：
 
-![pic](same_k_d22d1.png)
+![pic](/Projects/SM2bygcl/ScreenShot/same_k_d22d1.png)
 
 ### Malleability of ECDSA, e.g. $(r,s)$ and $(r,-s)$ are both valid signatures, lead to blockchain network split
 
@@ -71,7 +77,7 @@ $e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐�
 
 运行结果如下：
 
-![pic](.png)
+![pic](/Projects/SM2bygcl/ScreenShot/r-s.png)
 
 ### Ambiguity of DER encode could lead to blockchain network split
 
