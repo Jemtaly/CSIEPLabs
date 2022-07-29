@@ -14,11 +14,16 @@ Project : verify the above pitfalls with proof-of-concept code
 
 ### Leaking $k$ leads to leaking of $d$
 
-根据ECDSA的签名算法，有$s = k^{-1}(e + dr) \pmod{n}$，可推得$d = (sk - e)  r^{-1} \pmod{n}$，若已知$k$，则可以直接得到$d$。
+根据ECDSA的签名算法，有$s = k^{-1}(e + dr) \pmod{n}$，可推得$d = (sk - e)  r^{-1} \pmod{n}$，若已知$k$，则可以直接得到$d$。这里其实还需要考虑$gcd(r, n)$，若两者不互素，需要左右和模数同除以该公因数。由于模数范围变小了，所以为了得到准确的$d$，还需要对得到的$d$递增模数，重新签名验证是否得到正确的$d$。
 
 ```python
 def k2d(k, G, P, n, e, r, s):
-    d = ((s * k - e) * inverse(r, n)) % n
+    d = ((((s * k - e)%n) // gcd(r, n)) * inverse(r // gcd(r, n), n // gcd(r, n))) % (n // gcd(r, n))
+    while(1):
+        if (ECDSASign(k, d, e, n, G) == [r, s]):
+            break
+        else:
+            d = d + (n // gcd(r, n))
     return d
 ```
 
@@ -28,12 +33,17 @@ def k2d(k, G, P, n, e, r, s):
 
 ### Reusing $k$ leads to leaking of $d$
 
-若两次签名$(r_1,s_1)$和$(r_2,s_2)$使用同一个$k$，那么有$r = r_1 = r_2$,$s_1=k^{-1}(e_1+dr),s_2=k^{-1}(e_2+dr)$，即$ks_1=(e_1+dr),ks_2=(e_2+dr)$，两式相除可得$s_1/s_2=(e_1+dr)/(e_2+dr)$，整理可得$s_1e_2/s_2 +s_1dr/s_2 = e_1 + dr, d= (e_1-s_1e_2/s_2)/(s_1r/s_2-r),d = (e_1s_2-s_1e_2)/(s_1r-rs_2)$ 。
+若两次签名$(r_1,s_1)$和$(r_2,s_2)$使用同一个$k$，那么有$r = r_1 = r_2$,$s_1=k^{-1}(e_1+dr),s_2=k^{-1}(e_2+dr)$，即$ks_1=(e_1+dr),ks_2=(e_2+dr)$，两式相除可得$s_1/s_2=(e_1+dr)/(e_2+dr)$，整理可得$s_1e_2/s_2 +s_1dr/s_2 = e_1 + dr, d= (e_1-s_1e_2/s_2)/(s_1r/s_2-r),d = (e_1s_2-s_1e_2)/(s_1r-rs_2)$ 。同样地，这里也需要注意$gcd(s_1r-r*s_2,n)$，若不互素，左右和模数同除以该公因数。由于模数范围变小了，所以为了得到准确的$d$，还需要对得到的$d$递增模数，重新签名验证是否得到正确的$d$。
 
 ```python
-def rek2d(k1, k2, G, P, n, e1, e2, r1, r2, s1, s2):
+def rek2d(k1, k2, G, P, n, e1, e2, r1, s1, r2, s2):
     r = r1
-    d = ((e1 * s2 - s1 * e2) * inverse(s1 * r - r * s2, n))  % n
+    d = ((((e1 * s2 - s1 * e2)%n) // gcd(s1 * r - r * s2, n))* inverse((s1 * r - r * s2) // gcd(s1 * r - r * s2, n), n // gcd(s1 * r - r * s2, n)))  % (n // gcd(s1 * r - r * s2, n))
+    while(1):
+        if (ECDSASign(k, d, e1, n, G) == [r1, s1]):
+            break
+        else:
+            d = d + (n // gcd(s1 * r - r * s2, n))
     return d
 ```
 
@@ -43,13 +53,18 @@ def rek2d(k1, k2, G, P, n, e1, e2, r1, r2, s1, s2):
 
 ### Two users, using $k$ leads to leaking of $d$, that is they can deduce each other’s $d$
 
-若两个用户使用同样的$k$加密签名，那么有$r = r_1 = r_2, s_1=k^{-1}(e_1+d_1r),s_2=k^{-1}(e_2+d_1r) $，即$ks_1=(e_1+d_1r),ks_2=(e_2+d_2r)$，两式相除可得$s_1/s_2=(e_1+d_1r)/(e_2+d_2r)$，若对于用户2已知$d_2$，则可得$d_1 = (s_1(e_2+d_2r)/s_2 - e_1)/r$，同理也可由$d_1$求得$d_2$。
+若两个用户使用同样的$k$加密签名，那么有$r = r_1 = r_2, s_1k=(e_1+d_1r),s_2k=(e_2+d_1r) $，第一个式子乘$s_2$，第二个式子乘$s_1$，可以得到$s_1s_2k=(s_2e_1+s_2rd_1),s_1s_2k=(s_1e_2+s_1rd_1)$，那么有$s_2rd_1 = s_1e_2+s_1rd_2 - s_2e_1$，由此方程可求得$d_1$。注意这里也要考虑$gcd(s_2r, n)$是否为1，若两者不互素，还需要左右两边和模数一起同除以$gcd(s_2r, n)$，同样地求得$d_2$需要递增小模数，求得在原模数下的正确解，可重新签名和签名值比较验证。
 
 ```python
-def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, r2, s1, s2):
+def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, s1, r2, s2):
     r = r1
-    d2 = (s1*(e2+d2*r)*inverse(s2,n)-e1)*inverse(r,n)
-    return d2
+    d1 = (inverse((s2 * r) // gcd(s2 * r, n), n // gcd(s2 * r, n)) * ((s1 * e2 - s2 * e1 + s1 * r * d2) // gcd(s2 * r, n))) % (n // gcd(s2 * r, n))
+    while(1):
+        if (ECDSASign(k, d1, e1, n, G) == [r1, s1]):
+            break
+        else:
+            d1 = d1 + (n // gcd(s2 * r, n))
+    return d1
 ```
 
 运行结果如下：
