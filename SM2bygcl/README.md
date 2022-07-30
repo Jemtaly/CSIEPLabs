@@ -244,7 +244,7 @@ G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736
 
 ![pic](./ScreenShot/SM_sign.png)
 
-## SM2 2P验签实现
+## SM2 2P解密实现
 
 files : 
 
