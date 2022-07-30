@@ -38,8 +38,8 @@
     - [ ] Project: Implement the above ECMH scheme
     - [x] Project: Implement a PGP scheme with SM2
     - [ ] Project: implement sm2 2P sign with real network communication
-    - [ ] Project: PoC impl of the scheme, or do implement analysis by Google
     - [ ] Project: implement sm2 2P decrypt with real network communication
+    - [x] Project: PoC impl of the scheme, or do implement analysis by Google
 
 - Bitcoin
     - [x] Project: forge a signature to pretend that you are Satoshi
