@@ -295,6 +295,8 @@ python3 ./sm2_test.py
 
 ### 具体实现
 
+![Google Password Checkup](screenshots/GPC.png)
+
 创建 `GPCServer` 和 `GPCClient` 类分别表示 Google Password Checkup 的服务器和客户端，服务端在初始化函数中处理原始数据并生成私钥 $b$，代码如下：
 
 ```python3
