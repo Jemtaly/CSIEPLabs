@@ -6,10 +6,20 @@
 |-|-|
 |ECDSA.py|Project: verify the above pitfalls with proof-of-concept code|
 |PGP.py|Project: Implement a PGP scheme with SM2|
+|ECMH.py|Project: Implement the above ECMH scheme|
+
+运行指导：安装以下库，需要python编译环境。
+
+```
+pip install numpy
+pip install Crypto
+pip install hashlib
+pip install gmssl
+```
 
 ## ECDSA的弱点
 
-files : ECDSA.py
+file : ECDSA.py
 
 Project : verify the above pitfalls with proof-of-concept code
 
@@ -121,7 +131,7 @@ def ECDSA_Schnorr(G, P, n, e1, e2, r1, s1, R, s2):
 
 ## 使用SM2实现PGP
 
-files : PGP.py
+file : PGP.py
 
 Project : Implement a PGP scheme with SM2
 
@@ -162,3 +172,44 @@ def generate_key():
     crysm42.set_key(deckey, SM4_DECRYPT)
     dectext = crysm42.crypt_ecb(ciphertext)
 ```
+
+## ECMH实现
+
+file : ECMH.py
+
+Project : Implement the above ECMH scheme
+
+参考文献：https://eprint.iacr.org/2009/226.pdf
+
+根据上述参考文献，实现了其中最朴素的‘Try-and-Increment’ Method，算法如下：
+
+![pic](./ScreenShot/TImethod.png)
+
+`ECMH`用于hash单个元素，`ECMH_set`用于hash一个集合，把$\mathbb{F}_{2^n}^{*}$上的元素映射到椭圆曲线加法群上$G$，这样得到的hash就可以满足以下两条性质
+
+* 1. $ECMH(A+B) = ECMH(A) + ECMH(B)$
+* 2. $ECMH(A, B) = ECMH(B, A)$
+
+```
+def ECMH(u):
+    h = int(hashlib.sha256(str(u).encode()).hexdigest(), 16)
+    i = 0
+    while(1):
+        x = h + i
+        d = (x ** 3 + a * x + b) % p
+        if pow(d, (p - 1) // 2, p) % p == 1:
+            y = modular_sqrt(d, p)
+            return [x, y]
+
+def ECMH_set(s):
+    s = set(s)
+    result = [0, 0]
+    for x in s:
+        result[0] += ECMH(x)[0]
+        result[1] += ECMH(x)[1]
+    return result
+ ```
+ 
+ 结果如下图：
+ 
+ ![pic](./ScreenShot/ECMH.png)
