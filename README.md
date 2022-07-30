@@ -37,8 +37,8 @@
     - [x] Project: verify the above pitfalls with proof-of-concept code
     - [x] Project: Implement the above ECMH scheme
     - [x] Project: Implement a PGP scheme with SM2
-    - [ ] Project: implement sm2 2P sign with real network communication
-    - [ ] Project: implement sm2 2P decrypt with real network communication
+    - [x] Project: implement sm2 2P sign with real network communication
+    - [x] Project: implement sm2 2P decrypt with real network communication
     - [x] Project: PoC impl of the scheme, or do implement analysis by Google
 
 - Bitcoin-public
