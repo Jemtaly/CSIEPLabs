@@ -102,7 +102,7 @@ Rho Method 攻击的时间复杂度为 $O(2^{\frac{n}{2}})$，空间复杂度为
 
 ![screenshot](screenshots/rho_method_64.png)
 
-另外针对 *72* 位简化 SM3 算法也进行了测试并找到一组碰撞，耗时约 11 h.（由于进行该测试时，程序的具体实现和现在略有不同，所以实际编译运行的结果可能与截图中的有出入）
+针对 *72* 位简化 SM3 算法的 Rho Method 攻击，在 O3 优化下单次攻击耗时约 13.3 h:
 
 ![screenshot](screenshots/rho_method_72.png)
 
