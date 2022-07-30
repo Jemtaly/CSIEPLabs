@@ -1,12 +1,20 @@
 # SM2
 
-Project: impl sm2 with RFC6979.
-
 贡献者：李岱耕
 
-内容：实现了 SM2 最基本的加解密、签名和验证功能。其中，签名实现了对 RFC 6979 的支持。
+目录：
 
-## 具体实现
+- [SM2 with RFC6979](#sm2-with-rfc6979)
+
+- [Google Password Checkup](#google-password-checkup)
+
+## SM2 with RFC6979
+
+### 说明
+
+实现了 SM2 最基本的加解密、签名和验证功能。其中，签名实现了对 RFC 6979 的支持。
+
+### 具体实现
 
 创建 SM3 类，并实现椭圆曲线的基本运算：
 
@@ -38,7 +46,7 @@ class SM2:
         return self.add(self.add(Q, Q), P) if n & 1 else self.add(Q, Q)
 ```
 
-### 参数验证和密钥对生成
+#### 参数验证和密钥对生成
 
 ![参数验证](screenshots/参数验证.png)
 
@@ -62,7 +70,7 @@ class SM2:
         self.P = self.mult(self.d, G)
 ```
 
-### 加密
+#### 加密
 
 ![加密](screenshots/加密.png)
 
@@ -85,7 +93,7 @@ class SM2:
         return C1 + C2 + C3
 ```
 
-### 解密
+#### 解密
 
 ![解密](screenshots/解密.png)
 
@@ -110,7 +118,7 @@ class SM2:
         return M
 ```
 
-### 签名
+#### 签名
 
 ![签名](screenshots/签名.png)
 
@@ -128,7 +136,7 @@ class SM2:
         return r.to_bytes(self.m, 'big') + s.to_bytes(self.m, 'big')
 ```
 
-### 验证
+#### 验证
 
 ![验证](screenshots/验证.png)
 
@@ -149,7 +157,7 @@ class SM2:
         return r == R
 ```
 
-### RFC 6979
+#### RFC 6979
 
 RFC 6979 官方文档对 k 生成方式的描述如下：
 
@@ -265,7 +273,7 @@ RFC 6979 官方文档对 k 生成方式的描述如下：
             V = hmac.new(K, V, pysmx.SM3.SM3).digest()
 ```
 
-## 运行指导
+### 运行指导
 
 运行前需要先安装 python 第三方库 snowland-smx，可通过以下命令安装：
 
@@ -279,6 +287,77 @@ pip install snowland-smx==0.3.2a1
 python3 ./sm2_test.py
 ```
 
-## 运行结果
+### 运行结果
 
 ![screenshot](screenshots/sm2_test.png)
+
+## Google Password Checkup
+
+### 具体实现
+
+创建 `GPCServer` 和 `GPCClient` 类分别表示 Google Password Checkup 的服务器和客户端，服务端在初始化函数中处理原始数据并生成私钥 $b$，代码如下：
+
+```python3
+    def __init__(self, data, p):
+        assert isprime(p)
+        self.p = p
+        self.b = random.randrange(1, self.p)
+        self.table = {i.to_bytes(2, 'big'): set() for i in range(0xffff)}
+        for up in data.items():
+            h = hash(up) % self.p
+            k = h.to_bytes(8, 'big')[:2]
+            v = pow(h, self.b, self.p)
+            self.table[k].add(v)
+```
+
+客户端在初始化函数中生成私钥 $a$，然后在 `get_kv` 方法中计算并得到 $k$ 和 $v$ 的值：
+
+```python3
+    def __init__(self, up, p):
+        assert isprime(p)
+        self.p = p
+        self.h = hash(up) % self.p
+        phi = self.p - 1
+        while True:
+            self.a = random.randrange(0, phi)
+            gcd, (r, _) = exgcd(self.a, phi)
+            if gcd == 1:
+                self.r = r % phi
+                break
+
+    def get_kv(self):
+        k = self.h.to_bytes(8, 'big')[:2]
+        v = pow(self.h, self.a, self.p)
+        return k, v
+```
+
+服务端接收到 $k$ 和 $v$ 后根据 $v$ 计算 $h^{ab}$，并找到 $k$ 对应的 $S$：
+
+```python3
+    def find_S(self, k, v):
+        hab = pow(v, self.b, self.p)
+        S = self.table[k]
+        return hab, S
+```
+
+最后客户端根据服务端发来的 $h^{ab}$ 和 $S$ 进行检测：
+
+```python3
+    def detect(self, hab, S):
+        hb = pow(hab, self.r, self.p)
+        return hb in S
+```
+
+*注：在本实现中，原协议里使用的 Argon2 被简化为 python 自带的 `hash` 函数。*
+
+### 运行指导
+
+在当前文件目录执行以下命令以运行测试程序：
+
+```
+python3 ./google_password_checkup.py
+```
+
+### 运行结果
+
+![screenshot](screenshots/google_password_checkup.png)
