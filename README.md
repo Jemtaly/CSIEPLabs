@@ -41,15 +41,12 @@
     - [ ] Project: implement sm2 2P decrypt with real network communication
     - [x] Project: PoC impl of the scheme, or do implement analysis by Google
 
-- Bitcoin
-    - [x] Project: forge a signature to pretend that you are Satoshi
-
 - Bitcoin-public
     - [ ] Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
     - [x] Project: forge a signature to pretend that you are Satoshi
 
 - Eth-public
-    - [x] Project: research report on MP
+    - [x] Project: research report on MPT
 
 - Real world cryptanalyses
     - [x] Project: Find a key with hash value `sdu_cst_20220610` under a message composed of your name followed by your student ID. For example, `San Zhan 202000460001`.
