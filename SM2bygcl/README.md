@@ -7,6 +7,10 @@
 |ECDSA.py|Project: verify the above pitfalls with proof-of-concept code|
 |PGP.py|Project: Implement a PGP scheme with SM2|
 |ECMH.py|Project: Implement the above ECMH scheme|
+|SM2_sign_sender.py|Project: implement sm2 2P sign with real network communication|
+|SM2_sign_receiver.py|Project: implement sm2 2P sign with real network communication|
+|SM2_dec_sender.py|Project: implement sm2 2P decrypt with real network communication|
+|SM2_dec_receiver.py|Project: implement sm2 2P decrypt with real network communication|
 
 运行指导：安装以下库，需要python编译环境。
 
@@ -15,6 +19,7 @@ pip install numpy
 pip install Crypto
 pip install hashlib
 pip install gmssl
+pip install socket
 ```
 
 ## ECDSA的弱点
@@ -213,3 +218,45 @@ def ECMH_set(s):
  结果如下图：
  
  ![pic](./ScreenShot/ECMH.png)
+
+## SM2 2P签名实现
+
+files : 
+
+* SM2_sign_sender.py
+* SM2_sign_receiver.py
+
+Project : implement sm2 2P sign with real network communication
+
+该项目使用python的socket网络编程模拟实际网络，实现了下图的SM2签名流程，使用的曲线如下。
+
+```
+a = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC
+b = 0x28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93
+p = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF
+n = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123
+G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736a2f4f6779c59bdcee36b692153d0a9877cc62a474002df32e52139f0a0
+```
+
+![pic](./ScreenShot/SM2_sign_PPT.png)
+
+结果如图，实现双方交互，并成功签名：
+
+![pic](./ScreenShot/SM_sign.png)
+
+## SM2 2P验签实现
+
+files : 
+
+* SM2_dec_sender.py
+* SM2_dec_receiver.py
+
+Project : implement sm2 2P decrypt with real network communication
+
+类似签名的实现，解密流程如图：
+
+![pic](./ScreenShot/SM2_dec_PPT.png)
+
+结果如图，解密成功：
+
+![pic](./ScreenShot/SM2_dec.png)
