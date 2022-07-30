@@ -80,7 +80,7 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 
 ## 结果
 
-如图，显示OK，说明证明成功，即四级成绩在及格范围内。
+如图，显示OK，说明证明成功，即四级成绩在及格范围内。（图中文件夹名字修改过）
 
 ![pic](zk.png)
 
