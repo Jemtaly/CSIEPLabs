@@ -8,6 +8,8 @@ Project : Write a circuit to prove that your CET6 grade is larger than 425
 
 参考文章：https://feeler.blog.csdn.net/article/details/124145767
 
+(注：该项目完成核心思路和步骤来自上述文章。)
+
 ## 运行指导
 
 ### 安装Node
