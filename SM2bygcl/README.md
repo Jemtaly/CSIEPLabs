@@ -125,14 +125,10 @@ sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81, 0x82 and 0x83 a
 根据ECDSA签名算法有$s_1k=e_1+dr$，Schnorr签名有$s_2=k+e_2d$，联立可得$d = (s_1s_2-e_1)/(s_1e_2+r)$。
 
 ```python
-def ECDSA_Schnorr(G, P, n, e1, e2, r1, s1, R, s2):
-    d = ((s1*s2 - e1) * inverse(s1*e2+r, n)) % n
+def ECDSA_Schnorr(k, G, P, n, e1, e2, r1, s1, R, s2):
+    d = ((s1 * s2 - e1) * inverse(s1 * e2 + r, n)) % n
     return d
 ```
-
-运行结果如下：
-
-![pic](ECDSA_Schnorr.png)
 
 ## 使用SM2实现PGP
 
@@ -242,7 +238,7 @@ G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736
 
 结果如图，实现双方交互，并成功签名：
 
-![pic](./ScreenShot/SM_sign.png)
+![pic](./ScreenShot/SM2_sign.png)
 
 ## SM2 2P解密实现
 
