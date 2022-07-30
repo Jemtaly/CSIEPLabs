@@ -51,7 +51,7 @@
 
 - Real world cryptanalyses
     - [x] Project: Find a key with hash value `sdu_cst_20220610` under a message composed of your name followed by your student ID. For example, `San Zhan 202000460001`.
-    - [ ] Project: Find a 64-byte message under some $k$ fulfilling that their hash value is symmetrical
+    - [x] Project: Find a 64-byte message under some $k$ fulfilling that their hash value is symmetrical
  
 - Real world zk
     - [x] Project: Write a circuit to prove that your CET6 grade is larger than 425. 
