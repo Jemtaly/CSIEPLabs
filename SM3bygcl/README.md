@@ -110,3 +110,9 @@ Rho方法相对于生日攻击来说，是利用时间换空间，可以用两�
 下图为48位碰撞成功，循环长度为1578466。
 
 ![pic](/SM3bygcl/ScreenShot/Rho48.png)
+
+## SM3 实现和优化
+
+用C语言实现了SM3，加密结果如下：
+
+![pic](./ScreenShot/SM3_result.png)
