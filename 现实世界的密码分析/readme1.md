@@ -42,7 +42,7 @@ meow_default_m = bytes(
 
 
 
-![screenshot](fact/fact)
+![screenshot](fact/fact.png)
 
 
 ## Invertibility
@@ -116,7 +116,7 @@ Mewo hash中所有部件均为可逆，且使用 1024 位密钥作为 1024 位�
 ### 测试结果
 
 
-![screenshot](fact/test1)
+![screenshot](fact/test1.png)
 
 ## Symmetry
 
@@ -151,5 +151,5 @@ uint64_t f(uint64_t x) {
 ### 运行结果
 
 
-![screenshot](fact/test2)
+![screenshot](fact/test2.png)
 
