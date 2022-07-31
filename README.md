@@ -51,15 +51,14 @@
 
 - [Real world cryptanalyses](Real%20world%20cryptanalyses)
     - [x] Project: Find a key with hash value `sdu_cst_20220610` under a message composed of your name followed by your student ID. For example, `San Zhan 202000460001`.
-    - [x] Project: Find a 64-byte message under some $k$ fulfilling that their hash value is symmetrical
+    - [x] Project: Find a 64-byte message under some $k$ fulfilling that their hash value is symmetrical.
  
 - [Real world zk](Real%20world%20zk)
     - [x] Project: Write a circuit to prove that your CET6 grade is larger than 425. 
-    
-      * a. Your grade info is like (cn_id, grade, year, sig_by_moe). These grades are published as commitments onchain by MoE.
-      * b. When you got an interview from an employer, you can prove to them that you have passed the exam without letting them know the exact grade. 
-    
-    - [ ] Project: The commitment scheme used by MoE is SHA256-based. a. commit = SHA256(cn_id, grade, year, sig_by_moe, r)
+       - a. Your grade info is like (cn_id, grade, year, sig_by_moe). These grades are published as commitments onchain by MoE.
+       - b. When you got an interview from an employer, you can prove to them that you have passed the exam without letting them know the exact grade. 
+    - [ ] Project: The commitment scheme used by MoE is SHA256-based.
+       - a. commit = SHA256(cn_id, grade, year, sig_by_moe, r)
     
 - [SM4](https://github.com/Jemtaly/CryptoXX)
     - [x] Project: optimize SM4 implementation (software). 
