@@ -4,7 +4,7 @@
 
 |文件名|项目|
 |-|-|
-|BitcoinTX.md|Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself|
+|bitcoinTX.md|Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself|
 |ECDSA.py|Project: forge a signature to pretend that you are Satoshi|
 
 运行指导：
@@ -18,11 +18,11 @@ pip install hashlib
 
 ## Bitcoin TX 分析
 
-file :BitcoinTX.md
+file :bitcoinTX.md
 
 Project : send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
 
-具体报告见`BitcoinTX.md`文件。
+具体报告见`bitcoinTX.md`文件。
 
 ## ECDSA签名伪造
 
