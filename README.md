@@ -24,7 +24,7 @@
 
 ## 项目清单
 
-- SM3
+- [SM3](SM3) / [SM3bygcl](SM3bygcl)
     - [x] Project: implement the naïve birthday attack of reduced SM3
     - [x] Project: implement the Rho method of reduced SM3
     - [x] Project: implement length extension attack for SM3, SHA256, etc.
@@ -32,7 +32,7 @@
     - [x] Project: Impl Merkle Tree following RFC6962
     - [ ] Project: Try to Implement this scheme
 
-- SM2
+- [SM2](SM2) / [SM2bygcl](SM2bygcl)
     - [ ] Project: report on the application of this deduce technique in Ethereum with ECDSA
     - [x] Project: impl sm2 with RFC6979
     - [x] Project: verify the above pitfalls with proof-of-concept code
@@ -42,21 +42,24 @@
     - [x] Project: implement sm2 2P decrypt with real network communication
     - [x] Project: PoC impl of the scheme, or do implement analysis by Google
 
-- Bitcoin-public
-    - [ ] Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
+- [Bitcoin](Bitcoin)
+    - [x] Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
     - [x] Project: forge a signature to pretend that you are Satoshi
 
-- Eth-public
+- [Ethereum](Ethereum)
     - [x] Project: research report on MPT
 
-- Real world cryptanalyses
+- [Real world cryptanalyses](Real%20world%20cryptanalyses)
     - [x] Project: Find a key with hash value `sdu_cst_20220610` under a message composed of your name followed by your student ID. For example, `San Zhan 202000460001`.
     - [x] Project: Find a 64-byte message under some $k$ fulfilling that their hash value is symmetrical
  
-- Real world zk
+- [Real world zk](Real%20world%20zk)
     - [x] Project: Write a circuit to prove that your CET6 grade is larger than 425. 
     
       * a. Your grade info is like (cn_id, grade, year, sig_by_moe). These grades are published as commitments onchain by MoE.
       * b. When you got an interview from an employer, you can prove to them that you have passed the exam without letting them know the exact grade. 
     
     - [ ] Project: The commitment scheme used by MoE is SHA256-based. a. commit = SHA256(cn_id, grade, year, sig_by_moe, r)
+    
+- [SM4](https://github.com/Jemtaly/CryptoXX)
+    - [x] Project: optimize SM3 implementation (software). 
