@@ -14,7 +14,7 @@
 
 ## SM3 生日攻击
 
-files : SM3biratt.py
+file : SM3biratt.py
 
 Project : implement the naïve birthday attack of reduced SM3
 
@@ -30,7 +30,7 @@ Project : implement the naïve birthday attack of reduced SM3
 
 ## SM3 长度扩展攻击
 
-files : SM3lenatt.py
+file : SM3lenatt.py
 
 Project: implement length extension attack for SM3
 
@@ -49,7 +49,7 @@ Project: implement length extension attack for SM3
 
 ## SM3 Rho方法
 
-files : SM3Rho.py
+file : SM3Rho.py
 
 Project : implement the Rho method of reduced SM3
 
