@@ -113,6 +113,10 @@ Rho方法相对于生日攻击来说，是利用时间换空间，可以用两�
 
 ## SM3 实现和优化
 
+file : SM3bygcl.c
+
+Project : do your best to optimize SM3 implementation (software)
+
 用C语言实现了SM3，计算结果如下：
 
 ![pic](./ScreenShot/SM3_result.png)
