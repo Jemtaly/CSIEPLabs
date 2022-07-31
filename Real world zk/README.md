@@ -1,6 +1,8 @@
 # Real world zk
 
-项目完成人：郭灿林
+项目完成人：李婕
+
+（注：报告和文件上传由郭灿林完成）
 
 folder : circom
 
