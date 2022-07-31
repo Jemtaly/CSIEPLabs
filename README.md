@@ -62,4 +62,4 @@
     - [ ] Project: The commitment scheme used by MoE is SHA256-based. a. commit = SHA256(cn_id, grade, year, sig_by_moe, r)
     
 - [SM4](https://github.com/Jemtaly/CryptoXX)
-    - [x] Project: optimize SM3 implementation (software). 
+    - [x] Project: optimize SM4 implementation (software). 
