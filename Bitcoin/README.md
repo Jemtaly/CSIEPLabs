@@ -2,6 +2,11 @@
 
 项目完成人：郭灿林
 
+|文件名|项目|
+|-|-|
+|BitcoinTX.md|Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself|
+|ECDSA.py|Project: forge a signature to pretend that you are Satoshi|
+
 运行指导：
 需要安装以下库，并且需要python运行环境。
 
@@ -11,9 +16,17 @@ pip install Crypto
 pip install hashlib
 ```
 
+## Bitcoin TX 分析
+
+file :BitcoinTX.md
+
+Project : send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
+
+具体报告见`BitcoinTX.md`文件。
+
 ## ECDSA签名伪造
 
-files : ECDSA.py
+file : ECDSA.py
 
 Project : forge a signature to pretend that you are Satoshi.
 
