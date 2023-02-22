@@ -14,7 +14,7 @@ Project: Write a circuit to prove that your CET6 grade is larger than 425
 
 ## 运行指导
 
-### 安装Node
+### 安装 Node
 
 ```
 sudo apt update
@@ -22,7 +22,7 @@ sudo apt install nodejs npm -y
 node --version
 ```
 
-### 安装Rust
+### 安装 Rust
 
 ```
 sudo apt install curl -y
@@ -30,7 +30,7 @@ sudo apt install cmake build-essential -y
 curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 ```
 
-### 安装Circom
+### 安装 Circom
 
 ```
 git clone https://github.com/iden3/circom.git
@@ -39,14 +39,14 @@ source $HOME/.cargo/env
 cargo build --release
 ```
 
-### 更新Circom
+### 更新 Circom
 
 ```
 cargo install --path circom
 circom --help
 ```
 
-### 安装Snarkjs
+### 安装 Snarkjs
 
 ```
 sudo npm install -g snarkjs
@@ -54,7 +54,7 @@ sudo npm install -g snarkjs
 
 ### 编译电路
 
-在文件夹`circom`中执行运行命令
+在文件夹 `circom` 中执行运行命令
 
 ```
 circom InRange.circom --r1cs --wasm --sym
