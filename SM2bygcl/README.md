@@ -173,7 +173,7 @@ def generate_key():
     dectext = crysm42.crypt_ecb(ciphertext)
 ```
 
-## ECMH实现
+## ECMH 实现
 
 file: ECMH.py
 
