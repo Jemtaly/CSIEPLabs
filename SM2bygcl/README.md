@@ -80,8 +80,7 @@ def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, s1, r2, s2):
 
 ### Malleability of ECDSA, e.g. $(r,s)$ and $(r,-s)$ are both valid signatures, lead to blockchain network split
 
-对于$(r,s)$验签，计算$es^{-1}G+rs^{-1}P=(x',y')$，若$r = x'$则通过验证；对于$(r,-s)$，计算
-$e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐标同样是$x'$，可通过验证。
+对于 $(r,s)$ 验签，计算 $es^{-1}G+rs^{-1}P=(x',y')$，若 $r=x'$ 则通过验证；对于 $(r,-s)$，计算 $e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐标同样是 $x'$，可通过验证。
 ```python
     print("----Malleability of ECDSA, e.g. (r,s) and (r,-s) are both valid signatures, lead to blockchain network split")
     print("one sign is : ", S)
