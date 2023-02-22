@@ -2,15 +2,15 @@
 
 项目完成人：李婕
 
-（注：报告和文件上传由郭灿林完成）
+*注：报告和文件上传由郭灿林完成*
 
-folder : circom
+Folder: circom
 
-Project : Write a circuit to prove that your CET6 grade is larger than 425
+Project: Write a circuit to prove that your CET6 grade is larger than 425
 
 参考文章：https://feeler.blog.csdn.net/article/details/124145767
 
-(注：该项目完成核心思路和步骤来自上述文章。)
+*注：该项目完成核心思路和步骤来自上述文章。*
 
 ## 运行指导
 
@@ -83,13 +83,13 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 
 ## 结果
 
-如图，显示OK，说明证明成功，即四级成绩在及格范围内。（图中文件夹名字修改过）
+如图，显示 OK，说明证明成功，即四级成绩在及格范围内。（图中文件夹名字修改过）
 
 ![pic](zk.png)
 
 ### 代码说明
 
-该项目的实现主要是用了封装好的黑箱，自己写的代码只有`InRange.circom`和`input.json`，在`InRange.circom`中，主要修改了`Main()`，其他代码来自上述参考文章，代码见下。`pass`为及格的范围，`mygrade`为需要隐藏的成绩，`out`输出结果1或0，`GreaterEqThan(10)`参数为`10`表示输入的数字的大小至多为10 bits，即最大为$2 ^ {10} = 1024$，只要`mygrade`大于等于`pass[0]`，`out`就输出`1`。
+该项目的实现主要是用了封装好的黑箱，自己写的代码只有 `InRange.circom` 和 `input.json`，在 `InRange.circom` 中，主要修改了 `Main()`，其他代码来自上述参考文章，代码见下。`pass` 为及格的范围，`mygrade` 为需要隐藏的成绩，`out` 输出结果 `1` 或 `0`，`GreaterEqThan(10)` 参数为 `10` 表示输入的数字的大小至多为 10 bits，即最大为 $2^{10}=1024$，只要 `mygrade` 大于等于 `pass[0]`，`out` 就输出 `1`。
 
 ```
 template Main() {
@@ -106,7 +106,7 @@ template Main() {
 }
 ```
 
-`input.json`文件为输入的参数，代码如下，对应到上面电路文件的参数。
+`input.json` 文件为输入的参数，代码如下，对应到上面电路文件的参数。
 
 ```
 {
