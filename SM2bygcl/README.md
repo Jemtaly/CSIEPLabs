@@ -2,17 +2,17 @@
 
 项目完成人：郭灿林
 
-|文件|项目|
-|-|-|
-|ECDSA.py|Project: verify the above pitfalls with proof-of-concept code|
-|PGP.py|Project: Implement a PGP scheme with SM2|
-|ECMH.py|Project: Implement the above ECMH scheme|
-|SM2_sign_sender.py|Project: implement sm2 2P sign with real network communication|
-|SM2_sign_receiver.py|Project: implement sm2 2P sign with real network communication|
-|SM2_dec_sender.py|Project: implement sm2 2P decrypt with real network communication|
-|SM2_dec_receiver.py|Project: implement sm2 2P decrypt with real network communication|
+| 文件 | 项目 |
+| --- | --- |
+| ECDSA.py | Project: verify the above pitfalls with proof-of-concept code |
+| PGP.py | Project: Implement a PGP scheme with SM2 |
+| ECMH.py | Project: Implement the above ECMH scheme |
+| SM2_sign_sender.py | Project: implement sm2 2P sign with real network communication |
+| SM2_sign_receiver.py | Project: implement sm2 2P sign with real network communication |
+| SM2_dec_sender.py | Project: implement sm2 2P decrypt with real network communication |
+| SM2_dec_receiver.py | Project: implement sm2 2P decrypt with real network communication |
 
-运行指导：安装以下库，需要python编译环境。
+运行指导：安装以下库，需要 python 编译环境。
 
 ```
 pip install numpy
@@ -22,21 +22,21 @@ pip install gmssl
 pip install socket
 ```
 
-## ECDSA的弱点
+## ECDSA 的弱点
 
-file : ECDSA.py
+File: ECDSA.py
 
-Project : verify the above pitfalls with proof-of-concept code
+Project: verify the above pitfalls with proof-of-concept code
 
-### ECDSA签名算法验证
+### ECDSA 签名算法验证
 
-如图，用私钥$d$签署的签名，能正确通过验证。具体ECDSA实现见`/Projects/Bitcoin/`。
+如图，用私钥 $d$ 签署的签名，能正确通过验证。具体 ECDSA 实现见 `/Projects/Bitcoin/`。
 
 ![pic](./ScreenShot/ECDSAsig.png)
 
 ### Leaking $k$ leads to leaking of $d$
 
-根据ECDSA的签名算法，有$s = k^{-1}(e + dr) \pmod{n}$，可推得$d = (sk - e)  r^{-1} \pmod{n}$，若已知$k$，则可以直接得到$d$。
+根据 ECDSA 的签名算法，有 $s=k^{-1}(e+dr)\pmod{n}$，可推得 $d=(sk-e)r^{-1}\pmod{n}$，若已知 $k$，则可以直接得到 $d$。
 
 ```python
 def k2d(k, G, P, n, e, r, s):
@@ -50,7 +50,7 @@ def k2d(k, G, P, n, e, r, s):
 
 ### Reusing $k$ leads to leaking of $d$
 
-若两次签名$(r_1,s_1)$和$(r_2,s_2)$使用同一个$k$，那么有$r = r_1 = r_2$,$s_1=k^{-1}(e_1+dr),s_2=k^{-1}(e_2+dr)$，即$ks_1=(e_1+dr),ks_2=(e_2+dr)$，两式相除可得$s_1/s_2=(e_1+dr)/(e_2+dr)$，整理可得$s_1e_2/s_2 +s_1dr/s_2 = e_1 + dr, d= (e_1-s_1e_2/s_2)/(s_1r/s_2-r),d = (e_1s_2-s_1e_2)/(s_1r-rs_2)$ 。
+若两次签名 $(r_1,s_1)$ 和 $(r_2,s_2)$ 使用同一个 $k$，那么有 $r = r_1 = r_2$,\ $s_1=k^{-1}(e_1+dr),\ s_2=k^{-1}(e_2+dr)$，即 $ks_1=(e_1+dr),\ ks_2=(e_2+dr)$，两式相除可得 $s_1/s_2=(e_1+dr)/(e_2+dr)$，整理可得 $s_1e_2/s_2 +s_1dr/s_2=e_1+dr,\ d=(e_1-s_1e_2/s_2)/(s_1r/s_2-r),\ d=(e_1s_2-s_1e_2)/(s_1r-rs_2)$。
 
 ```python
 def rek2d(k1, k2, G, P, n, e1, e2, r1, s1, r2, s2):
@@ -65,7 +65,7 @@ def rek2d(k1, k2, G, P, n, e1, e2, r1, s1, r2, s2):
 
 ### Two users, using $k$ leads to leaking of $d$, that is they can deduce each other’s $d$
 
-若两个用户使用同样的$k$加密签名，那么有$r = r_1 = r_2, s_1k=(e_1+d_1r),s_2k=(e_2+d_1r) $，第一个式子乘$s_2$，第二个式子乘$s_1$，可以得到$s_1s_2k=(s_2e_1+s_2rd_1),s_1s_2k=(s_1e_2+s_1rd_1)$，那么有$s_2rd_1 = s_1e_2+s_1rd_2 - s_2e_1$，由此方程可求得$d_1$。
+若两个用户使用同样的 $k$ 加密签名，那么有 $r=r_1=r_2,\ s_1k=(e_1+d_1r),\ s_2k=(e_2+d_1r)$，第一个式子乘 $s_2$，第二个式子乘 $s_1$，可以得到 $s_1s_2k=(s_2e_1+s_2rd_1),\ s_1s_2k=(s_1e_2+s_1rd_1)$，那么有 $s_2rd_1=s_1e_2+s_1rd_2-s_2e_1$，由此方程可求得 $d_1$。
 
 ```python
 def same_k_d22d1(k, G, P, n, d2, e1, e2, r1, s1, r2, s2):
@@ -97,7 +97,7 @@ $e(-s)^{-1}G+r(-s)^{-1}P=-(es^{-1}G+rs^{-1}P)=(x',-y')$，得到的点的横坐�
 
 ### Ambiguity of DER encode could lead to blockchain network split
 
-查阅bitcoin的源码https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki，如下，定义了DER编码的具体规则。
+查阅 bitcoin 的源码 https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki，如下，定义了 DER 编码的具体规则。
 
 ```
 DER encoding
@@ -114,15 +114,15 @@ S: arbitrary-length big-endian encoded S value. The same rules apply as for R.
 sighash-type: 1-byte hashtype flag (only 0x01, 0x02, 0x03, 0x81, 0x82 and 0x83 are allowed).
 ```
 
-由于bitcoin一直调用的是openssl中的算法，后来openssl更新了DER编码，而有些区块的hash值还是依据没有DER编码计算的，这就导致同一个签名会被编码成不同的二进制串，最后区块得到的hash值不同，从而导致区块链的分裂。
+由于 bitcoin 一直调用的是 openssl 中的算法，后来 openssl 更新了 DER 编码，而有些区块的 hash 值还是依据没有 DER 编码计算的，这就导致同一个签名会被编码成不同的二进制串，最后区块得到的 hash 值不同，从而导致区块链的分裂。
 
 ### One can forge signature if the verification does not check $m$
 
-这部分和Project : forge a signature to pretend that you are Satoshi差不多在此不做赘述，可见`/Projects/Bitcoin/`文件夹。
+这部分和 Project: forge a signature to pretend that you are Satoshi 差不多在此不做赘述，可见 `/Projects/Bitcoin/` 文件夹。
 
 ### Same $d$ and $k$, used in ECDSA & Schnorr signature, leads to leaking of $d$
 
-根据ECDSA签名算法有$s_1k=e_1+dr$，Schnorr签名有$s_2=k+e_2d$，联立可得$d = (s_1s_2-e_1)/(s_1e_2+r)$。
+根据 ECDSA 签名算法有 $s_1k=e_1+dr$，Schnorr 签名有 $s_2=k+e_2d$，联立可得 $d=(s_1s_2-e_1)/(s_1e_2+r)$。
 
 ```python
 def ECDSA_Schnorr(k, G, P, n, e1, e2, r1, s1, R, s2):
@@ -130,11 +130,11 @@ def ECDSA_Schnorr(k, G, P, n, e1, e2, r1, s1, R, s2):
     return d
 ```
 
-## 使用SM2实现PGP
+## 使用 SM2 实现 PGP
 
-file : PGP.py
+file: PGP.py
 
-Project : Implement a PGP scheme with SM2
+Project: Implement a PGP scheme with SM2
 
 参考资料：https://blog.csdn.net/m0_46743327/article/details/124629798
 
@@ -142,9 +142,9 @@ Project : Implement a PGP scheme with SM2
 
 ![pic](./ScreenShot/PGP.png)
 
-该PGP实现使用gmssl库中的sm2算法，实现了基于SM2的密钥交换和消息加密传输和解密。
+该 PGP 实现使用 gmssl 库中的 sm2 算法，实现了基于 SM2 的密钥交换和消息加密传输和解密。
 
-首先，用`generate_key`函数生成随机的用于对称加密算法的密钥。
+首先，用 `generate_key` 函数生成随机的用于对称加密算法的密钥。
 
 ```
 def generate_key():
@@ -154,7 +154,7 @@ def generate_key():
     return m.hexdigest()[0 : 16]
 ```
 
-发送方使用生成的对称密钥对要传输的明文进行SM4算法加密。同时用要进行交流的一方的公钥对对称密钥进行加密，使用非对称加密算法SM2。
+发送方使用生成的对称密钥对要传输的明文进行 SM4 算法加密。同时用要进行交流的一方的公钥对对称密钥进行加密，使用非对称加密算法 SM2。
 
 ```
     crysm4 = CryptSM4()
@@ -176,20 +176,20 @@ def generate_key():
 
 ## ECMH实现
 
-file : ECMH.py
+file: ECMH.py
 
-Project : Implement the above ECMH scheme
+Project: Implement the above ECMH scheme
 
 参考文献：https://eprint.iacr.org/2009/226.pdf
 
-根据上述参考文献，实现了其中最朴素的‘Try-and-Increment’ Method，算法如下：
+根据上述参考文献，实现了其中最朴素的 ‘Try-and-Increment’ Method，算法如下：
 
 ![pic](./ScreenShot/TImethod.png)
 
-`ECMH`用于hash单个元素，`ECMH_set`用于hash一个集合，把$\mathbb{F}_{2^n}^{*}$上的元素映射到椭圆曲线加法群上$G$，这样得到的hash就可以满足以下两条性质
+`ECMH` 用于 hash 单个元素，`ECMH_set` 用于 hash 一个集合，把 $\mathbb{F}_{2^n}^{*}$ 上的元素映射到椭圆曲线加法群上 $G$，这样得到的 hash 就可以满足以下两条性质
 
 * 1. $ECMH(A+B) = ECMH(A) + ECMH(B)$
-* 2. $ECMH(A, B) = ECMH(B, A)$
+* 2. $ECMH(A,B) = ECMH(B,A)$
 
 ```
 def ECMH(u):
@@ -209,22 +209,22 @@ def ECMH_set(s):
         result[0] += ECMH(x)[0]
         result[1] += ECMH(x)[1]
     return result
- ```
+```
  
- 结果如下图：
- 
- ![pic](./ScreenShot/ECMH.png)
+结果如下图：
 
-## SM2 2P签名实现
+![pic](./ScreenShot/ECMH.png)
 
-files : 
+## SM2 2P 签名实现
+
+files: 
 
 * SM2_sign_sender.py
 * SM2_sign_receiver.py
 
-Project : implement sm2 2P sign with real network communication
+Project: implement sm2 2P sign with real network communication
 
-该项目使用python的socket网络编程模拟实际网络，实现了下图的SM2签名流程，使用的曲线如下。
+该项目使用 python 的 socket 网络编程模拟实际网络，实现了下图的 SM2 签名流程，使用的曲线如下。
 
 ```
 a = 0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC
@@ -240,14 +240,14 @@ G = 0x32c4ae2c1f1981195f9904466a39c9948fe30bbff2660be1715a4589334c74c7, 0xbc3736
 
 ![pic](./ScreenShot/SM2_sign.png)
 
-## SM2 2P解密实现
+## SM2 2P 解密实现
 
-files : 
+files: 
 
 * SM2_dec_sender.py
 * SM2_dec_receiver.py
 
-Project : implement sm2 2P decrypt with real network communication
+Project: implement sm2 2P decrypt with real network communication
 
 类似签名的实现，解密流程如图：
 
