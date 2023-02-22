@@ -2,7 +2,7 @@
 
 项目完成人：郭灿林
 
-file : researchMPT.md
+File: researchMPT.md
 
-Project : research report on MPT
+Project: research report on MPT
 
