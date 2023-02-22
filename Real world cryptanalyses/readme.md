@@ -42,7 +42,7 @@ Mewo hash 中所有部件均为可逆，且使用 1024 位密钥作为 1024 位�
 
 ### 算法说明
 
-### squeeze_inverse函数如下：
+### squeeze_inverse 函数如下：
 
 该函数较为简单，只需按照正常步骤倒转即可，注意最后的通道变化。
 
@@ -56,7 +56,7 @@ Mewo hash 中所有部件均为可逆，且使用 1024 位密钥作为 1024 位�
     paddq(lanes[0], lanes[2])
 ```
 
-### Finalization_inverse函数如下：
+### Finalization_inverse 函数如下：
 
 ```python3
     pxor(lanes[0], lanes[1])
