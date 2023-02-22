@@ -8,7 +8,7 @@
 
 ## Node 节点
 
-有四种 node 接口，分别为 `fullNode`,`shortNode`,`valueNode`,`hashNode`，其中 `fullNode` 为分支节点，可以有多个子节点，`shortNode` 为扩展节点，只有一个子节点，`valueNode` 为叶子节点，`hashNode` 是 `fullNode` 和 `shortNode` 对象的 RLP 哈希值，没有子节点。
+有四种 node 接口，分别为 `fullNode`, `shortNode`, `valueNode`, `hashNode`，其中 `fullNode` 为分支节点，可以有多个子节点，`shortNode` 为扩展节点，只有一个子节点，`valueNode` 为叶子节点，`hashNode` 是 `fullNode` 和 `shortNode` 对象的 RLP 哈希值，没有子节点。
 
 从下面代码可以看到，`fullNode` 有 17 个元素，其中 16 个表示 `0-F`16 个节点，第 17 位是 `fullNode` 本身的数据，`shortNode` 中的 `Val` 指向下一个节点，它的特点是把多个只有一个子节点的父节点和其子节点合并起来从而缩短了树的深度，`valueNode` 保存数据的结点，存储 hash 值，`hashNode` 为 `fullNode` 或 `shortNode` 对象的 RLP 哈希值，被两者间接持有，就是两个结构体中的 `nodeFlag`。
 
