@@ -37,7 +37,7 @@ Project: implement length extension attack for SM3
 
 由于 gmssl 里面没有单独 padding 的函数，所以我把 gmssl 的 sm3 中的 `sm3_hash` 函数里面的填充部分拿出来单独写成 `padding` 函数。
 
-长度扩展攻击主要思路是任意计算一个 hash 值，将该 hash 值作为块更新函数 `sm3_cf` 的 IV 输入，消息块则输入要扩展的消息块，考虑输入多个消息块，这里用了一个 for 循环，需要注意的是，输入的消息块的最后一块需要加上原 hash 值消息块的长度，即该行代码后面的 $512*Mlen$，`tempp = "%0128s" %hex(sum(addmsgpad[-1][len(addmsgpad[-1]) - i - 1] * (256 ** i) for i in range(len(addmsgpad[-1]))) + 512 * Mlen)[2:]`。
+长度扩展攻击主要思路是任意计算一个 hash 值，将该 hash 值作为块更新函数 `sm3_cf` 的 IV 输入，消息块则输入要扩展的消息块，考虑输入多个消息块，这里用了一个 for 循环，需要注意的是，输入的消息块的最后一块需要加上原 hash 值消息块的长度，即该行代码后面的 $512*Mlen$，`tempp = "%0128s" % hex(sum(addmsgpad[-1][len(addmsgpad[-1]) - i - 1] * (256 ** i) for i in range(len(addmsgpad[-1]))) + 512 * Mlen)[2:]`。
 
 ```
     for i in range(len(addmsgpad)):
