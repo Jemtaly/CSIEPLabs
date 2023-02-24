@@ -13,7 +13,6 @@
 | 项目目录 | 贡献者 |
 | --- | --- |
 | [SM3](SM3) | 李岱耕 |
-| [SM3bygcl](SM3bygcl) | 郭灿林 |
 | [Bitcoin](Bitcoin) | 郭灿林 |
 | [Ethereum](Ethereum) | 郭灿林 |
 | [SM2](SM2) | 李岱耕 |
@@ -24,7 +23,7 @@
 
 ## 项目清单
 
-- [SM3](SM3) / [SM3bygcl](SM3bygcl)
+- [SM3](SM3)
     - [x] Project: implement the naïve birthday attack of reduced SM3
     - [x] Project: implement the Rho method of reduced SM3
     - [x] Project: implement length extension attack for SM3, SHA256, etc.
@@ -34,13 +33,13 @@
 
 - [SM2](SM2) / [SM2bygcl](SM2bygcl)
     - [ ] Project: report on the application of this deduce technique in Ethereum with ECDSA
-    - [x] Project: impl sm2 with RFC6979
-    - [x] Project: verify the above pitfalls with proof-of-concept code
-    - [x] Project: Implement the above ECMH scheme
-    - [x] Project: Implement a PGP scheme with SM2
-    - [x] Project: implement sm2 2P sign with real network communication
-    - [x] Project: implement sm2 2P decrypt with real network communication
-    - [x] Project: PoC impl of the scheme, or do implement analysis by Google
+    - [x] Project: impl sm2 with RFC6979 (李岱耕)
+    - [x] Project: verify the above pitfalls with proof-of-concept code (郭灿林)
+    - [x] Project: Implement the above ECMH scheme (郭灿林)
+    - [x] Project: Implement a PGP scheme with SM2 (郭灿林)
+    - [x] Project: implement sm2 2P sign with real network communication (郭灿林)
+    - [x] Project: implement sm2 2P decrypt with real network communication (郭灿林)
+    - [x] Project: PoC impl of the scheme, or do implement analysis by Google (李岱耕)
 
 - [Bitcoin](Bitcoin)
     - [x] Project: send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
@@ -61,4 +60,4 @@
        - a. commit = SHA256(cn_id, grade, year, sig_by_moe, r)
     
 - [SM4](https://github.com/Jemtaly/CryptoXX)
-    - [x] Project: optimize SM4 implementation (software). 
+    - [x] Project: Optimize SM4 implementation (software). 
