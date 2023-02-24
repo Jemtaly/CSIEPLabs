@@ -170,7 +170,7 @@ func (t *Trie) insert(n node, prefix, key []byte, value node) (bool, node, error
 
    case hashNode:
       // 如果当前节点是 hashNode, hashNode 的意思是当前节点还没有加载到内存里面来，
-      // 还是存放在数据库里面，那么首先调用 t.resolveHash (n, prefix) 来加载到内存，
+      // 还是存放在数据库里面，那么首先调用 t.resolveHash(n, prefix) 来加载到内存，
       // 然后对加载出来的节点调用 insert 方法来进行插入。
       rn, err := t.resolveHash(n, prefix)
       if err != nil {
